@@ -9,7 +9,9 @@ import {
 import { CSSProperties, memo, useCallback, useEffect, useState } from "react";
 import { db } from "./utils";
 import HotelCard from "./components/HotelCard";
-import { IHotelData } from "./types";
+import CategoryMenu from "./components/CategoryMenu";
+import SearchBar from "./components/Search/SearchBar";
+import { EHotelCategory, IHotelData } from "./types";
 import InfiniteLoader from "react-window-infinite-loader";
 import { FixedSizeList } from "react-window";
 
@@ -25,7 +27,7 @@ const HotelRow = memo(
     index: number;
     style: CSSProperties;
   }) => (
-    <div style={style}>
+    <div style={{ ...style, top: +(style.top || 0) + 24 }} className="px-4">
       <HotelCard data={data[index]} />
     </div>
   ),
@@ -35,6 +37,8 @@ function App() {
   const [hotels, setHotels] = useState<IHotelData[]>([]);
   const [lastItemKey, setLastItemKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] =
+    useState<EHotelCategory | null>(null);
 
   const loadHotels = useCallback(
     (after?: string) => {
@@ -71,9 +75,24 @@ function App() {
     loadHotels();
   }, [loadHotels]);
 
+  const handleCategorySelect = (category: EHotelCategory | null) => {
+    setSelectedCategory(category);
+
+    setHotels([]);
+    setLastItemKey(null);
+    loadHotels();
+  };
+
   return (
-    <main className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Explore</h1>
+    <main className="pt-4">
+      <h1 className="text-2xl font-bold mb-4 px-4">Explore</h1>
+
+      <SearchBar />
+
+      <CategoryMenu
+        selectedCategory={selectedCategory}
+        onCategorySelect={handleCategorySelect}
+      />
 
       <section className="flex flex-col gap-6">
         <InfiniteLoader
@@ -89,7 +108,7 @@ function App() {
               onItemsRendered={onItemsRendered}
               ref={ref}
               width="100%"
-              height={window.innerHeight - 80}
+              height={window.innerHeight - 226}
             >
               {HotelRow}
             </FixedSizeList>

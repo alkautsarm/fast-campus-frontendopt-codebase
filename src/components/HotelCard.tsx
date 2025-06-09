@@ -1,34 +1,11 @@
 import { Heart, Star } from "lucide-react";
-import { IHotelData } from "../types";
+import { IHotelData } from "@/types";
 import { memo, useState } from "react";
+import { formatDate } from "@/utils";
 
 interface IHotelCardProps {
   data: IHotelData;
 }
-
-const formatDate = (s: string, e: string) => {
-  const start = new Date(s);
-  const end = new Date(e);
-
-  const startMonth = start.toLocaleString("en-US", { month: "short" });
-  const endMonth = end.toLocaleString("en-US", { month: "short" });
-
-  const startDate = start.getDate();
-  const endDate = end.getDate();
-
-  const startYear = start.getFullYear();
-  const endYear = end.getFullYear();
-
-  if (startMonth === endMonth && startYear === endYear) {
-    return `${startMonth} ${startDate} - ${endDate}`;
-  }
-
-  if (startYear === endYear) {
-    return `${startMonth} ${startDate} - ${endMonth} ${endDate}`;
-  }
-
-  return `${startMonth} ${startDate}, ${startYear} - ${endMonth} ${endDate}, ${endYear}`;
-};
 
 function HotelCard({ data }: IHotelCardProps) {
   const [isLiked, setIsLiked] = useState(false);
@@ -51,7 +28,9 @@ function HotelCard({ data }: IHotelCardProps) {
 
       <div>
         <div className="mb-1 flex items-center justify-between">
-          <div className="font-medium">{data.location}</div>
+          <div className="font-medium">
+            {data.name}, {data.location.name}
+          </div>
           <div className="flex items-center gap-1">
             <Star className="w-3.5" />
             <span>
