@@ -5,25 +5,49 @@ import { EHotelLocation, TenantCounts } from "@/types";
 import { formatDateLabel, formatGuestLabel, formatPlaceLabel } from "@/utils";
 import SearchModal from "./SearchModal";
 
-const SearchBar = () => {
+interface SearchBarProps {
+  handleSearchSubmit: ({
+    locationId,
+    dateRange,
+    totalTenants,
+  }: {
+    locationId: EHotelLocation;
+    dateRange: DateRange;
+    totalTenants: number;
+  }) => void;
+  selectedPlace: EHotelLocation;
+  selectedDateRange: DateRange | undefined;
+  tenantCounts: TenantCounts;
+  setSelectedPlace: (place: EHotelLocation) => void;
+  setSelectedDateRange: (dateRange?: DateRange) => void;
+  setTenantCounts: (tenantCounts: TenantCounts) => void;
+}
+
+const SearchBar = ({
+  handleSearchSubmit,
+  selectedPlace,
+  selectedDateRange,
+  tenantCounts,
+  setSelectedPlace,
+  setSelectedDateRange,
+  setTenantCounts,
+}: SearchBarProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPlace, setSelectedPlace] = useState<EHotelLocation>(
-    EHotelLocation.All,
-  );
-  const [selectedDateRange, setSelectedDateRange] = useState<
-    DateRange | undefined
-  >();
-  const [tenantCounts, setTenantCounts] = useState<TenantCounts>({
-    adults: 0,
-    children: 0,
-    infants: 0,
-  });
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const onSubmit = () => {
+    handleSearchSubmit({
+      locationId: selectedPlace,
+      dateRange: selectedDateRange!,
+      totalTenants:
+        tenantCounts.adults + tenantCounts.children + tenantCounts.infants,
+    });
   };
 
   return (
@@ -54,6 +78,7 @@ const SearchBar = () => {
         selectedDateRange={selectedDateRange}
         tenantCounts={tenantCounts}
         onClose={handleCloseModal}
+        onSubmit={onSubmit}
         onPlaceChange={setSelectedPlace}
         onDateChange={setSelectedDateRange}
         onCountsChange={setTenantCounts}

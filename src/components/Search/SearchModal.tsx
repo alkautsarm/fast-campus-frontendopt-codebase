@@ -17,6 +17,7 @@ interface SearchModalCard {
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSubmit: () => void;
 
   selectedPlace: EHotelLocation;
   selectedDateRange: DateRange | undefined;
@@ -63,6 +64,8 @@ const CollapsedCard = ({
 const SearchModal = ({
   isOpen,
   onClose,
+  onSubmit,
+
   selectedPlace,
   selectedDateRange,
   tenantCounts,
@@ -137,8 +140,8 @@ const SearchModal = ({
   };
 
   const handleSearch = () => {
+    onSubmit();
     handleClose();
-    /* TODO: Implement search */
   };
 
   if (!isOpen) return null;
