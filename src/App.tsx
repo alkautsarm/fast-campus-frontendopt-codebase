@@ -5,6 +5,8 @@ import {
   orderByKey,
   onValue,
   ref,
+  orderByChild,
+  startAt,
 } from "firebase/database";
 import { CSSProperties, memo, useCallback, useEffect, useState } from "react";
 import { db } from "./utils";
@@ -20,14 +22,22 @@ import {
 import InfiniteLoader from "react-window-infinite-loader";
 import { FixedSizeList } from "react-window";
 import { DateRange } from "react-day-picker";
+import { CircleX } from "lucide-react";
 
 interface ILoadHotelsProps {
   after?: string;
   category?: EHotelCategory | null;
   location?: EHotelLocation;
+  totalTenants?: number;
 }
 
 const limit = 5;
+const dbPath = {
+  default: "hotels",
+  category: "hotels_type",
+  location: "hotels_location",
+  categoryLocation: "hotels_type_location",
+};
 
 const HotelRow = memo(
   ({
@@ -64,39 +74,26 @@ function App() {
   });
 
   const loadHotels = useCallback(
-    ({ after, category, location }: ILoadHotelsProps = {}) => {
+    ({ after, category, location, totalTenants }: ILoadHotelsProps = {}) => {
       if (loading) return;
 
       setLoading(true);
 
-      const queryConstraints = [limitToFirst(limit), orderByKey()];
+      let queryConstraints = [limitToFirst(limit), orderByKey()];
+      if (after) queryConstraints.push(startAfter(after));
 
-      if (after) {
-        queryConstraints.push(startAfter(after));
+      let selectedDbPath = dbPath.default;
+      if (category) selectedDbPath = `${dbPath.category}/${category}`;
+      if (location) selectedDbPath = `${dbPath.location}/${location}`;
+      if (category && location)
+        selectedDbPath = `${dbPath.categoryLocation}/${category}_${location}`;
+
+      if (totalTenants) {
+        queryConstraints = [orderByChild("capacity"), startAt(totalTenants)];
+        selectedDbPath = dbPath.default;
       }
 
-      let hotelsQuery = query(ref(db, "hotels"), ...queryConstraints);
-
-      if (category) {
-        hotelsQuery = query(
-          ref(db, `hotels_type/${category}`),
-          ...queryConstraints,
-        );
-      }
-
-      if (location) {
-        hotelsQuery = query(
-          ref(db, `hotels_location/${location}`),
-          ...queryConstraints,
-        );
-      }
-
-      if (category && location) {
-        hotelsQuery = query(
-          ref(db, `hotels_type_location/${category}_${location}`),
-          ...queryConstraints,
-        );
-      }
+      const hotelsQuery = query(ref(db, selectedDbPath), ...queryConstraints);
 
       onValue(hotelsQuery, (snapshot) => {
         if (snapshot.exists()) {
@@ -104,9 +101,30 @@ function App() {
           setLastItemKey(hotelsKey[hotelsKey.length - 1]);
 
           const hotelsData = Object.values(snapshot.val()) as IHotelData[];
-          setHotels((prev) =>
-            after ? [...prev, ...hotelsData] : [...hotelsData],
-          );
+
+          if (totalTenants) {
+            const filteredHotels = hotelsData.filter((hotel) => {
+              let isMatch = true;
+
+              if (category) {
+                isMatch = hotel.type.id === category;
+              }
+
+              if (location) {
+                isMatch = hotel.location.id === location;
+              }
+
+              return isMatch;
+            });
+
+            setHotels((prev) =>
+              after ? [...prev, ...filteredHotels] : [...filteredHotels],
+            );
+          } else {
+            setHotels((prev) =>
+              after ? [...prev, ...hotelsData] : [...hotelsData],
+            );
+          }
         }
 
         setLoading(false);
@@ -125,7 +143,12 @@ function App() {
 
     setHotels([]);
     setLastItemKey(null);
-    loadHotels({ category });
+    loadHotels({
+      category,
+      location: selectedPlace,
+      totalTenants:
+        tenantCounts.adults + tenantCounts.children + tenantCounts.infants,
+    });
   };
 
   const handleSearchSubmit = ({
@@ -137,6 +160,8 @@ function App() {
       after: undefined,
       category: selectedCategory,
       location: locationId,
+      totalTenants:
+        tenantCounts.adults + tenantCounts.children + tenantCounts.infants,
     });
   };
 
@@ -160,31 +185,54 @@ function App() {
       />
 
       <section className="flex flex-col gap-6">
-        <InfiniteLoader
-          isItemLoaded={(index) => !loading && !!hotels[index]}
-          itemCount={1000}
-          loadMoreItems={() => {
-            loadHotels({
-              after: lastItemKey || undefined,
-              category: selectedCategory,
-              location: selectedPlace,
-            });
-          }}
-        >
-          {({ onItemsRendered, ref }) => (
-            <FixedSizeList
-              itemSize={450}
-              itemCount={hotels.length}
-              itemData={hotels}
-              onItemsRendered={onItemsRendered}
-              ref={ref}
-              width="100%"
-              height={window.innerHeight - 226}
-            >
-              {HotelRow}
-            </FixedSizeList>
-          )}
-        </InfiniteLoader>
+        {!hotels.length && !loading && (
+          <div className="text-gray-400 flex flex-col justify-center items-center gap-4 py-10">
+            <CircleX className="w-10 h-10" />
+            <p className="text-lg font-bold">No hotels found</p>
+          </div>
+        )}
+
+        {!!hotels.length && (
+          <InfiniteLoader
+            isItemLoaded={(index) => {
+              if (
+                tenantCounts.adults +
+                tenantCounts.children +
+                tenantCounts.infants
+              ) {
+                return true;
+              }
+
+              return !loading && !!hotels[index];
+            }}
+            itemCount={1000}
+            loadMoreItems={() => {
+              loadHotels({
+                after: lastItemKey || undefined,
+                category: selectedCategory,
+                location: selectedPlace,
+                totalTenants:
+                  tenantCounts.adults +
+                  tenantCounts.children +
+                  tenantCounts.infants,
+              });
+            }}
+          >
+            {({ onItemsRendered, ref }) => (
+              <FixedSizeList
+                itemSize={450}
+                itemCount={hotels.length}
+                itemData={hotels}
+                onItemsRendered={onItemsRendered}
+                ref={ref}
+                width="100%"
+                height={window.innerHeight - 226}
+              >
+                {HotelRow}
+              </FixedSizeList>
+            )}
+          </InfiniteLoader>
+        )}
       </section>
     </main>
   );
