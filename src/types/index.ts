@@ -34,6 +34,8 @@ export interface IHotelData {
   availableDates: {
     start: string;
     end: string;
+    startEpoch: number;
+    endEpoch: number;
   };
   pricePerNight: number;
   rating: number;

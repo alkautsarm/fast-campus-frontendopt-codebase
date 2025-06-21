@@ -12,7 +12,7 @@ interface SearchBarProps {
     totalTenants,
   }: {
     locationId: EHotelLocation;
-    dateRange: DateRange;
+    dateRange: DateRange | undefined;
     totalTenants: number;
   }) => void;
   selectedPlace: EHotelLocation;
@@ -44,7 +44,7 @@ const SearchBar = ({
   const onSubmit = () => {
     handleSearchSubmit({
       locationId: selectedPlace,
-      dateRange: selectedDateRange!,
+      dateRange: selectedDateRange,
       totalTenants:
         tenantCounts.adults + tenantCounts.children + tenantCounts.infants,
     });

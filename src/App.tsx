@@ -27,8 +27,9 @@ import { CircleX } from "lucide-react";
 interface ILoadHotelsProps {
   after?: string;
   category?: EHotelCategory | null;
-  location?: EHotelLocation;
+  locationId?: EHotelLocation;
   totalTenants?: number;
+  dateRange?: DateRange;
 }
 
 const limit = 5;
@@ -74,27 +75,36 @@ function App() {
   });
 
   const loadHotels = useCallback(
-    ({ after, category, location, totalTenants }: ILoadHotelsProps = {}) => {
+    ({
+      after,
+      category,
+      locationId,
+      totalTenants,
+      dateRange,
+    }: ILoadHotelsProps = {}) => {
       if (loading) return;
 
       setLoading(true);
 
-      let queryConstraints = [limitToFirst(limit), orderByKey()];
-      if (after) queryConstraints.push(startAfter(after));
-
       let selectedDbPath = dbPath.default;
       if (category) selectedDbPath = `${dbPath.category}/${category}`;
-      if (location) selectedDbPath = `${dbPath.location}/${location}`;
-      if (category && location)
-        selectedDbPath = `${dbPath.categoryLocation}/${category}_${location}`;
+      if (locationId) selectedDbPath = `${dbPath.location}/${locationId}`;
+      if (category && locationId) {
+        selectedDbPath = `${dbPath.categoryLocation}/${category}_${locationId}`;
+      }
 
+      let queryConstraints = [orderByKey()];
+      if (after) {
+        queryConstraints.push(startAfter(after));
+      }
       if (totalTenants) {
         queryConstraints = [orderByChild("capacity"), startAt(totalTenants)];
-        selectedDbPath = dbPath.default;
+      }
+      if (!totalTenants && !dateRange) {
+        queryConstraints.push(limitToFirst(limit));
       }
 
       const hotelsQuery = query(ref(db, selectedDbPath), ...queryConstraints);
-
       onValue(hotelsQuery, (snapshot) => {
         if (snapshot.exists()) {
           const hotelsKey = Object.keys(snapshot.val());
@@ -102,19 +112,13 @@ function App() {
 
           const hotelsData = Object.values(snapshot.val()) as IHotelData[];
 
-          if (totalTenants) {
+          if (dateRange) {
             const filteredHotels = hotelsData.filter((hotel) => {
-              let isMatch = true;
-
-              if (category) {
-                isMatch = hotel.type.id === category;
-              }
-
-              if (location) {
-                isMatch = hotel.location.id === location;
-              }
-
-              return isMatch;
+              return (
+                hotel.availableDates.startEpoch <=
+                  (dateRange.from?.getTime() || 0) &&
+                hotel.availableDates.endEpoch >= (dateRange.to?.getTime() || 0)
+              );
             });
 
             setHotels((prev) =>
@@ -145,23 +149,28 @@ function App() {
     setLastItemKey(null);
     loadHotels({
       category,
-      location: selectedPlace,
+      locationId: selectedPlace,
       totalTenants:
         tenantCounts.adults + tenantCounts.children + tenantCounts.infants,
+      dateRange: selectedDateRange,
     });
   };
 
   const handleSearchSubmit = ({
     locationId,
+    dateRange,
+    totalTenants,
   }: {
     locationId: EHotelLocation;
+    dateRange: DateRange | undefined;
+    totalTenants: number;
   }) => {
     loadHotels({
       after: undefined,
       category: selectedCategory,
-      location: locationId,
-      totalTenants:
-        tenantCounts.adults + tenantCounts.children + tenantCounts.infants,
+      locationId,
+      dateRange,
+      totalTenants,
     });
   };
 
@@ -210,11 +219,12 @@ function App() {
               loadHotels({
                 after: lastItemKey || undefined,
                 category: selectedCategory,
-                location: selectedPlace,
+                locationId: selectedPlace,
                 totalTenants:
                   tenantCounts.adults +
                   tenantCounts.children +
                   tenantCounts.infants,
+                dateRange: selectedDateRange,
               });
             }}
           >
