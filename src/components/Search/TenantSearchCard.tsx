@@ -1,16 +1,7 @@
 import { Minus, Plus } from "lucide-react";
-import { TenantOptions } from "~/src/constants";
-
-interface TenantCounts {
-  adults: number;
-  children: number;
-  infants: number;
-}
-
-interface TenantSearchCardProps {
-  onCountsChange: (counts: TenantCounts) => void;
-  counts: TenantCounts;
-}
+import { TenantOptions } from "@/constants";
+import HotelDataProvider from "@/contexts/HotelDataProvider";
+import { TenantCounts } from "@/types";
 
 interface TenantSectionProps {
   title: string;
@@ -49,14 +40,14 @@ const TenantSection = ({
   </div>
 );
 
-const TenantSearchCard = ({
-  onCountsChange,
-  counts,
-}: TenantSearchCardProps) => {
-  const updateCount = (type: keyof TenantCounts, count: number) => {
-    const newCounts = { ...counts, [type]: count };
+const TenantSearchCard = () => {
+  const { setTenantCounts, tenantCounts } =
+    HotelDataProvider.useHotelDataContext();
 
-    onCountsChange(newCounts);
+  const updateCount = (type: keyof TenantCounts, count: number) => {
+    const newCounts = { ...tenantCounts, [type]: count };
+
+    setTenantCounts(newCounts);
   };
 
   return (
@@ -69,7 +60,7 @@ const TenantSearchCard = ({
             key={option.id}
             title={option.title}
             description={option.description}
-            count={counts[option.id as keyof TenantCounts]}
+            count={tenantCounts[option.id as keyof TenantCounts]}
             onChange={(count) =>
               updateCount(option.id as keyof TenantCounts, count)
             }

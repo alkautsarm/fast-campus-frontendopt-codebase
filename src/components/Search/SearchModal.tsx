@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { DateRange } from "react-day-picker";
-import { EHotelLocation, TenantCounts } from "@/types";
+import { EHotelLocation } from "@/types";
 import { formatDateLabel, formatGuestLabel, formatPlaceLabel } from "@/utils";
 
+import HotelDataProvider from "@/contexts/HotelDataProvider";
 import PlaceSearchCard from "./PlaceSearchCard";
 import TenantSearchCard from "./TenantSearchCard";
 import DateSearchCard from "./DateSearchCard";
@@ -18,13 +18,6 @@ interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: () => void;
-
-  selectedPlace: EHotelLocation;
-  selectedDateRange: DateRange | undefined;
-  tenantCounts: TenantCounts;
-  onPlaceChange: (place: EHotelLocation) => void;
-  onDateChange: (date: DateRange | undefined) => void;
-  onCountsChange: (counts: TenantCounts) => void;
 }
 
 enum ESearchModalCard {
@@ -61,18 +54,16 @@ const CollapsedCard = ({
   </div>
 );
 
-const SearchModal = ({
-  isOpen,
-  onClose,
-  onSubmit,
+const SearchModal = ({ isOpen, onClose, onSubmit }: SearchModalProps) => {
+  const {
+    selectedPlace,
+    selectedDateRange,
+    tenantCounts,
+    setSelectedPlace,
+    setSelectedDateRange,
+    setTenantCounts,
+  } = HotelDataProvider.useHotelDataContext();
 
-  selectedPlace,
-  selectedDateRange,
-  tenantCounts,
-  onPlaceChange,
-  onDateChange,
-  onCountsChange,
-}: SearchModalProps) => {
   const [expandedCard, setExpandedCard] = useState<ESearchModalCard>(
     ESearchModalCard.Where,
   );
@@ -103,26 +94,11 @@ const SearchModal = ({
 
     switch (card.id) {
       case ESearchModalCard.Where:
-        return (
-          <PlaceSearchCard
-            onPlaceChange={onPlaceChange}
-            selectedPlace={selectedPlace}
-          />
-        );
+        return <PlaceSearchCard />;
       case ESearchModalCard.When:
-        return (
-          <DateSearchCard
-            onDateChange={onDateChange}
-            selectedDateRange={selectedDateRange}
-          />
-        );
+        return <DateSearchCard />;
       case ESearchModalCard.Who:
-        return (
-          <TenantSearchCard
-            onCountsChange={onCountsChange}
-            counts={tenantCounts}
-          />
-        );
+        return <TenantSearchCard />;
       default:
         return null;
     }
@@ -134,9 +110,9 @@ const SearchModal = ({
   };
 
   const handleClearAll = () => {
-    onPlaceChange(EHotelLocation.All);
-    onDateChange(undefined);
-    onCountsChange({ adults: 0, children: 0, infants: 0 });
+    setSelectedPlace(EHotelLocation.All);
+    setSelectedDateRange(undefined);
+    setTenantCounts({ adults: 0, children: 0, infants: 0 });
   };
 
   const handleSearch = () => {

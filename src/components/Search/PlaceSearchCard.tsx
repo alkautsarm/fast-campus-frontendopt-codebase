@@ -1,17 +1,12 @@
 import { LocationOptions } from "~/src/constants";
-import { EHotelLocation } from "@/types";
+import HotelDataProvider from "@/contexts/HotelDataProvider";
 
-interface PlaceSearchExpandedCardProps {
-  onPlaceChange: (value: EHotelLocation) => void;
-  selectedPlace: EHotelLocation;
-}
+const defaultImageWrapper =
+  "relative aspect-square rounded-2xl overflow-hidden mb-2";
 
-const PlaceSearchExpandedCard = ({
-  onPlaceChange,
-  selectedPlace,
-}: PlaceSearchExpandedCardProps) => {
-  const defaultImageWrapper =
-    "relative aspect-square rounded-2xl overflow-hidden mb-2";
+const PlaceSearchExpandedCard = () => {
+  const { setSelectedPlace, selectedPlace } =
+    HotelDataProvider.useHotelDataContext();
 
   return (
     <div>
@@ -19,7 +14,10 @@ const PlaceSearchExpandedCard = ({
 
       <div className="grid grid-cols-4 gap-4">
         {LocationOptions.map((location) => (
-          <button key={location.id} onClick={() => onPlaceChange(location.id)}>
+          <button
+            key={location.id}
+            onClick={() => setSelectedPlace(location.id)}
+          >
             <div
               className={`${defaultImageWrapper} ${selectedPlace === location.id ? "ring-2 ring-black" : ""}`}
             >

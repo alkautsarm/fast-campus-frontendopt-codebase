@@ -3,11 +3,7 @@ import cabinIcon from "~/assets/icons/cabin.svg";
 import cavesIcon from "~/assets/icons/caves.svg";
 import islandIcon from "~/assets/icons/island.svg";
 import { EHotelCategory } from "@/types";
-
-interface CategoryMenuProps {
-  selectedCategory: EHotelCategory | null;
-  onCategorySelect: (category: EHotelCategory | null) => void;
-}
+import HotelDataProvider from "@/contexts/HotelDataProvider";
 
 const Categories = [
   { id: EHotelCategory.Island, icon: islandIcon, label: "Island" },
@@ -16,17 +12,17 @@ const Categories = [
   { id: EHotelCategory.Arctic, icon: arcticIcon, label: "Arctic" },
 ];
 
-const CategoryMenu = ({
-  selectedCategory,
-  onCategorySelect,
-}: CategoryMenuProps) => {
+const CategoryMenu = () => {
+  const { selectedCategory, handleCategorySelect } =
+    HotelDataProvider.useHotelDataContext();
+
   return (
     <div className="relative flex gap-6">
       {Categories.map((category) => (
         <button
           key={category.id}
           onClick={() =>
-            onCategorySelect(
+            handleCategorySelect(
               selectedCategory === category.id ? null : category.id,
             )
           }

@@ -1,38 +1,15 @@
 import { useState } from "react";
 import { Search, Settings2 } from "lucide-react";
-import { DateRange } from "react-day-picker";
-import { EHotelLocation, TenantCounts } from "@/types";
 import { formatDateLabel, formatGuestLabel, formatPlaceLabel } from "@/utils";
 import SearchModal from "./SearchModal";
+import HotelDataProvider from "@/contexts/HotelDataProvider";
 
-interface SearchBarProps {
-  handleSearchSubmit: ({
-    locationId,
-    dateRange,
-    totalTenants,
-  }: {
-    locationId: EHotelLocation;
-    dateRange: DateRange | undefined;
-    totalTenants: number;
-  }) => void;
-  selectedPlace: EHotelLocation;
-  selectedDateRange: DateRange | undefined;
-  tenantCounts: TenantCounts;
-  setSelectedPlace: (place: EHotelLocation) => void;
-  setSelectedDateRange: (dateRange?: DateRange) => void;
-  setTenantCounts: (tenantCounts: TenantCounts) => void;
-}
-
-const SearchBar = ({
-  handleSearchSubmit,
-  selectedPlace,
-  selectedDateRange,
-  tenantCounts,
-  setSelectedPlace,
-  setSelectedDateRange,
-  setTenantCounts,
-}: SearchBarProps) => {
+const SearchBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { selectedPlace, selectedDateRange, tenantCounts, handleSearchSubmit } =
+    HotelDataProvider.useHotelDataContext();
+
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -74,14 +51,8 @@ const SearchBar = ({
 
       <SearchModal
         isOpen={isModalOpen}
-        selectedPlace={selectedPlace}
-        selectedDateRange={selectedDateRange}
-        tenantCounts={tenantCounts}
         onClose={handleCloseModal}
         onSubmit={onSubmit}
-        onPlaceChange={setSelectedPlace}
-        onDateChange={setSelectedDateRange}
-        onCountsChange={setTenantCounts}
       />
     </>
   );

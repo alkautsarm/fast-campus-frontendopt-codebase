@@ -1,18 +1,10 @@
-import { DayPicker, DateRange } from "react-day-picker";
+import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
+import HotelDataProvider from "@/contexts/HotelDataProvider";
 
-interface DateSearchCardProps {
-  onDateChange: (dateRange: DateRange | undefined) => void;
-  selectedDateRange: DateRange | undefined;
-}
-
-const DateSearchCard = ({
-  onDateChange,
-  selectedDateRange,
-}: DateSearchCardProps) => {
-  const handleSelect = (range: DateRange | undefined) => {
-    onDateChange(range);
-  };
+const DateSearchCard = () => {
+  const { setSelectedDateRange, selectedDateRange } =
+    HotelDataProvider.useHotelDataContext();
 
   return (
     <div>
@@ -20,7 +12,7 @@ const DateSearchCard = ({
       <DayPicker
         mode="range"
         selected={selectedDateRange}
-        onSelect={handleSelect}
+        onSelect={(range) => setSelectedDateRange(range)}
         disabled={{ before: new Date() }}
         className="flex justify-center w-full text-sm"
         classNames={{
