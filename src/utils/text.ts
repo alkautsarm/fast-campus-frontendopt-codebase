@@ -1,15 +1,6 @@
 import { DateRange } from "react-day-picker";
-import { EHotelLocation, TenantCounts } from "@/types";
-import { LocationOptions } from "@/constants";
+import { TenantCounts } from "@/types";
 import { formatDate } from "./date";
-
-export const formatPlaceLabel = (place: EHotelLocation) => {
-  if (!place) return "Anywhere";
-
-  const location = LocationOptions.find((location) => location.id === place);
-
-  return location ? location.name : "Anywhere";
-};
 
 export const formatDateLabel = (date: DateRange | undefined) => {
   return date

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Search, Settings2 } from "lucide-react";
-import { formatDateLabel, formatGuestLabel, formatPlaceLabel } from "@/utils";
+import { formatDateLabel, formatGuestLabel } from "@/utils";
 import SearchModal from "./SearchModal";
 import HotelDataProvider from "@/contexts/HotelDataProvider";
 
@@ -20,7 +20,7 @@ const SearchBar = () => {
 
   const onSubmit = () => {
     handleSearchSubmit({
-      locationId: selectedPlace,
+      locationId: selectedPlace.id,
       dateRange: selectedDateRange,
       totalTenants:
         tenantCounts.adults + tenantCounts.children + tenantCounts.infants,
@@ -39,7 +39,7 @@ const SearchBar = () => {
             <div>
               <div className="text-sm font-semibold">Where to?</div>
               <div className="text-sm font-light text-gray-400">
-                {`${formatPlaceLabel(selectedPlace)} • ${formatDateLabel(selectedDateRange)} • ${formatGuestLabel(tenantCounts)}`}
+                {`${selectedPlace.name} • ${formatDateLabel(selectedDateRange)} • ${formatGuestLabel(tenantCounts)}`}
               </div>
             </div>
           </div>

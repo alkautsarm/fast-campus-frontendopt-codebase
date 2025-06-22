@@ -6,12 +6,7 @@ import {
   useState,
 } from "react";
 import { DateRange } from "react-day-picker";
-import {
-  EHotelCategory,
-  EHotelLocation,
-  IHotelData,
-  TenantCounts,
-} from "@/types";
+import { EHotelCategory, IHotelData, ILocation, TenantCounts } from "@/types";
 import {
   query,
   startAfter,
@@ -35,7 +30,7 @@ const dbPath = {
 interface ILoadHotelsProps {
   after?: string;
   category?: EHotelCategory | null;
-  locationId?: EHotelLocation;
+  locationId?: number;
   totalTenants?: number;
   dateRange?: DateRange;
 }
@@ -44,7 +39,7 @@ interface IHotelDataContext {
   hotels: IHotelData[];
   loading: boolean;
   selectedCategory: EHotelCategory | null;
-  selectedPlace: EHotelLocation;
+  selectedPlace: ILocation;
   selectedDateRange: DateRange | undefined;
   tenantCounts: TenantCounts;
   lastItemKey: string | null;
@@ -53,12 +48,12 @@ interface IHotelDataContext {
   setHotels: (hotels: IHotelData[]) => void;
   setLoading: (loading: boolean) => void;
   handleSearchSubmit: (props: {
-    locationId: EHotelLocation;
+    locationId: number;
     dateRange: DateRange | undefined;
     totalTenants: number;
   }) => void;
   handleCategorySelect: (category: EHotelCategory | null) => void;
-  setSelectedPlace: (place: EHotelLocation) => void;
+  setSelectedPlace: (place: ILocation) => void;
   setSelectedDateRange: (dateRange: DateRange | undefined) => void;
   setTenantCounts: (tenantCounts: TenantCounts) => void;
 }
@@ -67,7 +62,7 @@ const HotelDataContext = createContext<IHotelDataContext>({
   hotels: [],
   loading: false,
   selectedCategory: null,
-  selectedPlace: EHotelLocation.All,
+  selectedPlace: { id: 0, name: "Anywhere", image: "" },
   selectedDateRange: undefined,
   tenantCounts: { adults: 0, children: 0, infants: 0 },
   lastItemKey: null,
@@ -87,9 +82,11 @@ const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] =
     useState<EHotelCategory | null>(null);
-  const [selectedPlace, setSelectedPlace] = useState<EHotelLocation>(
-    EHotelLocation.All,
-  );
+  const [selectedPlace, setSelectedPlace] = useState<ILocation>({
+    id: 0,
+    name: "Anywhere",
+    image: "",
+  });
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >(undefined);
@@ -173,7 +170,7 @@ const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
     dateRange,
     totalTenants,
   }: {
-    locationId: EHotelLocation;
+    locationId: number;
     dateRange: DateRange | undefined;
     totalTenants: number;
   }) => {
@@ -193,7 +190,7 @@ const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
     setLastItemKey(null);
     loadHotels({
       category,
-      locationId: selectedPlace,
+      locationId: selectedPlace.id,
       totalTenants:
         tenantCounts.adults + tenantCounts.children + tenantCounts.infants,
       dateRange: selectedDateRange,

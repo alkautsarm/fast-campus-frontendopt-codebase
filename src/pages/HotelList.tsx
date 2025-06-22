@@ -69,7 +69,7 @@ function HotelList() {
               loadHotels({
                 after: lastItemKey || undefined,
                 category: selectedCategory,
-                locationId: selectedPlace,
+                locationId: selectedPlace.id,
                 totalTenants:
                   tenantCounts.adults +
                   tenantCounts.children +

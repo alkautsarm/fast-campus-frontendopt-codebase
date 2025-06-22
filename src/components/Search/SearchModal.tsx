@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { EHotelLocation } from "@/types";
-import { formatDateLabel, formatGuestLabel, formatPlaceLabel } from "@/utils";
+import { formatDateLabel, formatGuestLabel } from "@/utils";
 
 import HotelDataProvider from "@/contexts/HotelDataProvider";
 import PlaceSearchCard from "./PlaceSearchCard";
@@ -71,9 +70,7 @@ const SearchModal = ({ isOpen, onClose, onSubmit }: SearchModalProps) => {
   const getCardContent = (card: SearchModalCard) => {
     if (expandedCard !== card.id) {
       if (card.id === ESearchModalCard.Where) {
-        return (
-          <CollapsedCard value={formatPlaceLabel(selectedPlace)} card={card} />
-        );
+        return <CollapsedCard value={selectedPlace.name} card={card} />;
       }
 
       if (card.id === ESearchModalCard.When) {
@@ -110,7 +107,7 @@ const SearchModal = ({ isOpen, onClose, onSubmit }: SearchModalProps) => {
   };
 
   const handleClearAll = () => {
-    setSelectedPlace(EHotelLocation.All);
+    setSelectedPlace({ id: 0, name: "Anywhere", image: "" });
     setSelectedDateRange(undefined);
     setTenantCounts({ adults: 0, children: 0, infants: 0 });
   };

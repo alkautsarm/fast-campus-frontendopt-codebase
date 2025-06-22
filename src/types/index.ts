@@ -1,8 +1,7 @@
-export enum EHotelLocation {
-  All = 0,
-  Jakarta = 1,
-  Bandung = 2,
-  Surabaya = 3,
+export interface ILocation {
+  id: number;
+  name: string;
+  image: string;
 }
 
 export enum EHotelCategory {

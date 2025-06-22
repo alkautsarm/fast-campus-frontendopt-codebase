@@ -1,3 +1,3 @@
-export { db } from "./db";
+export { db, firestore } from "./db";
 export { formatDate } from "./date";
-export { formatPlaceLabel, formatDateLabel, formatGuestLabel } from "./text";
+export { formatDateLabel, formatGuestLabel } from "./text";
