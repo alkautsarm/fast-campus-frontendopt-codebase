@@ -1,9 +1,12 @@
 import HotelDataProvider from "@/contexts/HotelDataProvider";
+import { useDebounce } from "@/hooks/useDebounce";
 import { CategoryOptions } from "../constants";
 
 const CategoryMenu = () => {
   const { selectedCategory, handleCategorySelect } =
     HotelDataProvider.useHotelDataContext();
+
+  const debouncedCategorySelect = useDebounce(handleCategorySelect, 300);
 
   return (
     <div className="relative flex gap-6">
@@ -11,7 +14,7 @@ const CategoryMenu = () => {
         <button
           key={category.id}
           onClick={() =>
-            handleCategorySelect(
+            debouncedCategorySelect(
               selectedCategory === category.id ? null : category.id,
             )
           }
