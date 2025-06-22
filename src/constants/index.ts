@@ -1,3 +1,16 @@
+import arcticIcon from "~/assets/icons/arctic.svg";
+import cabinIcon from "~/assets/icons/cabin.svg";
+import cavesIcon from "~/assets/icons/caves.svg";
+import islandIcon from "~/assets/icons/island.svg";
+import { EHotelCategory } from "@/types";
+
+export const CategoryOptions = [
+  { id: EHotelCategory.Island, icon: islandIcon, label: "Island" },
+  { id: EHotelCategory.Cabin, icon: cabinIcon, label: "Cabin" },
+  { id: EHotelCategory.Caves, icon: cavesIcon, label: "Caves" },
+  { id: EHotelCategory.Arctic, icon: arcticIcon, label: "Arctic" },
+];
+
 export const TenantOptions = [
   {
     title: "Adults",

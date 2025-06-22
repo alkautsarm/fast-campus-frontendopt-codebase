@@ -1,16 +1,5 @@
-import arcticIcon from "~/assets/icons/arctic.svg";
-import cabinIcon from "~/assets/icons/cabin.svg";
-import cavesIcon from "~/assets/icons/caves.svg";
-import islandIcon from "~/assets/icons/island.svg";
-import { EHotelCategory } from "@/types";
 import HotelDataProvider from "@/contexts/HotelDataProvider";
-
-const Categories = [
-  { id: EHotelCategory.Island, icon: islandIcon, label: "Island" },
-  { id: EHotelCategory.Cabin, icon: cabinIcon, label: "Cabin" },
-  { id: EHotelCategory.Caves, icon: cavesIcon, label: "Caves" },
-  { id: EHotelCategory.Arctic, icon: arcticIcon, label: "Arctic" },
-];
+import { CategoryOptions } from "../constants";
 
 const CategoryMenu = () => {
   const { selectedCategory, handleCategorySelect } =
@@ -18,7 +7,7 @@ const CategoryMenu = () => {
 
   return (
     <div className="relative flex gap-6">
-      {Categories.map((category) => (
+      {CategoryOptions.map((category) => (
         <button
           key={category.id}
           onClick={() =>
