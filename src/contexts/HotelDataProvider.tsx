@@ -70,7 +70,6 @@ const hotelDataReducer = (
   state: HotelDataState,
   action: HotelDataAction,
 ): HotelDataState => {
-  console.log(state, action);
   switch (action.type) {
     case "SET_HOTELS":
       return { ...state, hotels: action.payload };
