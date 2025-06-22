@@ -3,7 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useState,
+  useReducer,
 } from "react";
 import { DateRange } from "react-day-picker";
 import { EHotelCategory, IHotelData, ILocation, TenantCounts } from "@/types";
@@ -35,7 +35,7 @@ interface ILoadHotelsProps {
   dateRange?: DateRange;
 }
 
-interface IHotelDataContext {
+interface HotelDataState {
   hotels: IHotelData[];
   loading: boolean;
   selectedCategory: EHotelCategory | null;
@@ -43,7 +43,59 @@ interface IHotelDataContext {
   selectedDateRange: DateRange | undefined;
   tenantCounts: TenantCounts;
   lastItemKey: string | null;
+}
 
+type HotelDataAction =
+  | { type: "SET_HOTELS"; payload: IHotelData[] }
+  | { type: "APPEND_HOTELS"; payload: IHotelData[] }
+  | { type: "RESET_HOTELS" }
+  | { type: "SET_LOADING"; payload: boolean }
+  | { type: "SET_SELECTED_CATEGORY"; payload: EHotelCategory | null }
+  | { type: "SET_SELECTED_PLACE"; payload: ILocation }
+  | { type: "SET_SELECTED_DATE_RANGE"; payload: DateRange | undefined }
+  | { type: "SET_TENANT_COUNTS"; payload: TenantCounts }
+  | { type: "SET_LAST_ITEM_KEY"; payload: string | null };
+
+const initialState: HotelDataState = {
+  hotels: [],
+  loading: false,
+  selectedCategory: null,
+  selectedPlace: { id: 0, name: "Anywhere", image: "" },
+  selectedDateRange: undefined,
+  tenantCounts: { adults: 0, children: 0, infants: 0 },
+  lastItemKey: null,
+};
+
+const hotelDataReducer = (
+  state: HotelDataState,
+  action: HotelDataAction,
+): HotelDataState => {
+  console.log(state, action);
+  switch (action.type) {
+    case "SET_HOTELS":
+      return { ...state, hotels: action.payload };
+    case "APPEND_HOTELS":
+      return { ...state, hotels: [...state.hotels, ...action.payload] };
+    case "RESET_HOTELS":
+      return { ...state, hotels: [], lastItemKey: null };
+    case "SET_LOADING":
+      return { ...state, loading: action.payload };
+    case "SET_SELECTED_CATEGORY":
+      return { ...state, selectedCategory: action.payload };
+    case "SET_SELECTED_PLACE":
+      return { ...state, selectedPlace: action.payload };
+    case "SET_SELECTED_DATE_RANGE":
+      return { ...state, selectedDateRange: action.payload };
+    case "SET_TENANT_COUNTS":
+      return { ...state, tenantCounts: action.payload };
+    case "SET_LAST_ITEM_KEY":
+      return { ...state, lastItemKey: action.payload };
+    default:
+      return state;
+  }
+};
+
+interface IHotelDataContext extends HotelDataState {
   loadHotels: (props: ILoadHotelsProps) => void;
   setHotels: (hotels: IHotelData[]) => void;
   setLoading: (loading: boolean) => void;
@@ -59,14 +111,7 @@ interface IHotelDataContext {
 }
 
 const HotelDataContext = createContext<IHotelDataContext>({
-  hotels: [],
-  loading: false,
-  selectedCategory: null,
-  selectedPlace: { id: 0, name: "Anywhere", image: "" },
-  selectedDateRange: undefined,
-  tenantCounts: { adults: 0, children: 0, infants: 0 },
-  lastItemKey: null,
-
+  ...initialState,
   loadHotels: () => {},
   setHotels: () => {},
   setLoading: () => {},
@@ -78,24 +123,7 @@ const HotelDataContext = createContext<IHotelDataContext>({
 });
 
 const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
-  const [hotels, setHotels] = useState<IHotelData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] =
-    useState<EHotelCategory | null>(null);
-  const [selectedPlace, setSelectedPlace] = useState<ILocation>({
-    id: 0,
-    name: "Anywhere",
-    image: "",
-  });
-  const [selectedDateRange, setSelectedDateRange] = useState<
-    DateRange | undefined
-  >(undefined);
-  const [tenantCounts, setTenantCounts] = useState<TenantCounts>({
-    adults: 0,
-    children: 0,
-    infants: 0,
-  });
-  const [lastItemKey, setLastItemKey] = useState<string | null>(null);
+  const [state, dispatch] = useReducer(hotelDataReducer, initialState);
 
   const loadHotels = useCallback(
     ({
@@ -105,9 +133,9 @@ const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
       totalTenants,
       dateRange,
     }: ILoadHotelsProps = {}) => {
-      if (loading) return;
+      if (state.loading) return;
 
-      setLoading(true);
+      dispatch({ type: "SET_LOADING", payload: true });
 
       let selectedDbPath = dbPath.default;
       if (category) selectedDbPath = `${dbPath.category}/${category}`;
@@ -131,7 +159,10 @@ const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
       onValue(hotelsQuery, (snapshot) => {
         if (snapshot.exists()) {
           const hotelsKey = Object.keys(snapshot.val());
-          setLastItemKey(hotelsKey[hotelsKey.length - 1]);
+          dispatch({
+            type: "SET_LAST_ITEM_KEY",
+            payload: hotelsKey[hotelsKey.length - 1],
+          });
 
           const hotelsData = Object.values(snapshot.val()) as IHotelData[];
 
@@ -144,20 +175,24 @@ const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
               );
             });
 
-            setHotels((prev) =>
-              after ? [...prev, ...filteredHotels] : [...filteredHotels],
-            );
+            if (after) {
+              dispatch({ type: "APPEND_HOTELS", payload: filteredHotels });
+            } else {
+              dispatch({ type: "SET_HOTELS", payload: filteredHotels });
+            }
           } else {
-            setHotels((prev) =>
-              after ? [...prev, ...hotelsData] : [...hotelsData],
-            );
+            if (after) {
+              dispatch({ type: "APPEND_HOTELS", payload: hotelsData });
+            } else {
+              dispatch({ type: "SET_HOTELS", payload: hotelsData });
+            }
           }
         }
 
-        setLoading(false);
+        dispatch({ type: "SET_LOADING", payload: false });
       });
     },
-    [loading],
+    [state.loading],
   );
 
   useEffect(() => {
@@ -176,7 +211,7 @@ const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
   }) => {
     loadHotels({
       after: undefined,
-      category: selectedCategory,
+      category: state.selectedCategory,
       locationId,
       dateRange,
       totalTenants,
@@ -184,28 +219,42 @@ const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleCategorySelect = (category: EHotelCategory | null) => {
-    setSelectedCategory(category);
+    dispatch({ type: "SET_SELECTED_CATEGORY", payload: category });
+    dispatch({ type: "RESET_HOTELS" });
 
-    setHotels([]);
-    setLastItemKey(null);
     loadHotels({
       category,
-      locationId: selectedPlace.id,
+      locationId: state.selectedPlace.id,
       totalTenants:
-        tenantCounts.adults + tenantCounts.children + tenantCounts.infants,
-      dateRange: selectedDateRange,
+        state.tenantCounts.adults +
+        state.tenantCounts.children +
+        state.tenantCounts.infants,
+      dateRange: state.selectedDateRange,
     });
   };
 
-  const contextValue: IHotelDataContext = {
-    hotels,
-    loading,
-    selectedCategory,
-    selectedPlace,
-    selectedDateRange,
-    tenantCounts,
-    lastItemKey,
+  const setHotels = (hotels: IHotelData[]) => {
+    dispatch({ type: "SET_HOTELS", payload: hotels });
+  };
 
+  const setLoading = (loading: boolean) => {
+    dispatch({ type: "SET_LOADING", payload: loading });
+  };
+
+  const setSelectedPlace = (place: ILocation) => {
+    dispatch({ type: "SET_SELECTED_PLACE", payload: place });
+  };
+
+  const setSelectedDateRange = (dateRange: DateRange | undefined) => {
+    dispatch({ type: "SET_SELECTED_DATE_RANGE", payload: dateRange });
+  };
+
+  const setTenantCounts = (tenantCounts: TenantCounts) => {
+    dispatch({ type: "SET_TENANT_COUNTS", payload: tenantCounts });
+  };
+
+  const contextValue: IHotelDataContext = {
+    ...state,
     handleSearchSubmit,
     handleCategorySelect,
     loadHotels,
