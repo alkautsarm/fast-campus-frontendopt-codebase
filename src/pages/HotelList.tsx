@@ -38,7 +38,7 @@ function HotelList() {
   } = HotelDataProvider.useHotelDataContext();
 
   return (
-    <main className="pt-4">
+    <main className="pt-4 border-l border-r border-gray-100">
       <h1 className="text-2xl font-bold mb-4 px-4">Explore</h1>
       <SearchBar />
       <CategoryMenu />

@@ -3,9 +3,11 @@ import HotelList from "./pages/HotelList";
 
 function App() {
   return (
-    <HotelDataProvider>
-      <HotelList />
-    </HotelDataProvider>
+    <main className="max-w-screen-sm mx-auto">
+      <HotelDataProvider>
+        <HotelList />
+      </HotelDataProvider>
+    </main>
   );
 }
 
