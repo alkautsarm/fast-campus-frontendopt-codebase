@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { collection, getDocs } from "firebase/firestore";
 import HotelDataProvider from "@/contexts/HotelDataProvider";
 import { ILocation } from "~/src/types";
@@ -7,20 +7,21 @@ import { firestore } from "~/src/utils";
 const defaultImageWrapper =
   "relative aspect-square rounded-2xl overflow-hidden mb-2";
 
+const fetchLocations = async (): Promise<ILocation[]> => {
+  const locationCollection = collection(firestore, "location");
+  const querySnapshot = await getDocs(locationCollection);
+
+  return querySnapshot.docs.map((doc) => doc.data() as ILocation);
+};
+
 const PlaceSearchExpandedCard = () => {
-  const [locations, setLocations] = useState<ILocation[]>([]);
   const { setSelectedPlace, selectedPlace } =
     HotelDataProvider.useHotelDataContext();
 
-  useEffect(() => {
-    const fetchLocations = async () => {
-      const locationCollection = collection(firestore, "location");
-      const querySnapshot = await getDocs(locationCollection);
-      setLocations(querySnapshot.docs.map((doc) => doc.data() as ILocation));
-    };
-
-    fetchLocations();
-  }, []);
+  const { data: locations = [] } = useQuery({
+    queryKey: ["locations"],
+    queryFn: fetchLocations,
+  });
 
   return (
     <div>
