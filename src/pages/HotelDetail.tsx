@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
-import Gallery from "@/components/Detail/Gallery";
 import { HotelDetailProvider } from "@/contexts/HotelDetailProvider";
+import Gallery from "@/components/Detail/Gallery";
+import Description from "@/components/Detail/Description";
 
 const Content = () => {
   const { hotel } = HotelDetailProvider.useHotelDetailContext();
@@ -10,6 +11,7 @@ const Content = () => {
   return (
     <main>
       <Gallery />
+      <Description />
     </main>
   );
 };
