@@ -1,0 +1,90 @@
+import { useState } from "react";
+import { ChevronLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { HotelDetailProvider } from "@/contexts/HotelDetailProvider";
+
+const Gallery = () => {
+  const { hotel } = HotelDetailProvider.useHotelDetailContext();
+  const navigate = useNavigate();
+  const [showPhotosModal, setShowPhotosModal] = useState(false);
+  const handleBackToList = () => {
+    navigate("/");
+  };
+
+  const handleOpenPhotosModal = () => {
+    setShowPhotosModal(true);
+  };
+
+  const handleClosePhotosModal = () => {
+    setShowPhotosModal(false);
+  };
+
+  if (!hotel) return null;
+
+  return (
+    <section className="relative">
+      <img
+        src={hotel.imageUrl}
+        alt={hotel.name}
+        className="w-full h-80 object-cover cursor-pointer"
+        onClick={handleOpenPhotosModal}
+      />
+
+      <button
+        onClick={handleBackToList}
+        className="absolute top-4 left-4 p-2 bg-white/80 hover:bg-white/90 rounded-full shadow-lg transition-colors"
+      >
+        <ChevronLeft className="w-6 h-6 text-gray-800" />
+      </button>
+
+      <div className="absolute bottom-4 right-4 px-3 py-1 bg-black/60 text-white text-sm rounded-full">
+        {hotel.photos.length} photos
+      </div>
+
+      {showPhotosModal && (
+        <div className="fixed inset-0 bg-white z-50 flex flex-col">
+          <div className="flex items-center justify-between p-4 bg-white">
+            <button
+              onClick={handleClosePhotosModal}
+              className="p-2 text-black hover:bg-white/20 rounded-full transition-colors"
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </button>
+          </div>
+
+          <div className="grid gap-2 h-full">
+            <div className="grid grid-cols-2 gap-2">
+              {hotel.photos.slice(0, 2).map((photo, index) => (
+                <img
+                  key={index}
+                  src={photo}
+                  alt={`${hotel.name} photo ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              ))}
+            </div>
+            <div className="grid grid-cols-1">
+              <img
+                src={hotel.photos[2]}
+                alt={`${hotel.name} photo 3`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {hotel.photos.slice(3).map((photo, index) => (
+                <img
+                  key={index}
+                  src={photo}
+                  alt={`${hotel.name} photo ${index + 4}`}
+                  className="w-full h-full object-cover"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+};
+
+export default Gallery;

@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Heart, Star } from "lucide-react";
 import { IHotelData } from "@/types";
 import { memo, useState } from "react";
@@ -9,13 +10,19 @@ interface IHotelCardProps {
 
 function HotelCard({ data }: IHotelCardProps) {
   const [isLiked, setIsLiked] = useState(false);
+  const navigate = useNavigate();
 
-  const handleLike = () => {
+  const handleLike = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     setIsLiked(!isLiked);
   };
 
+  const handleNavigateToDetail = () => {
+    navigate(`/hotel/${data.id}`);
+  };
+
   return (
-    <div>
+    <div onClick={handleNavigateToDetail}>
       <div className="mb-4 relative">
         <img
           className="h-[310px] w-full rounded-xl object-cover"

@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HotelList from "./pages/HotelList";
+import HotelDetail from "./pages/HotelDetail";
 
 function App() {
   return (
@@ -7,7 +8,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HotelList />} />
-          <Route path="/hotel/:id" element={<main>To Be Implemented</main>} />
+          <Route path="/hotel/:id" element={<HotelDetail />} />
         </Routes>
       </BrowserRouter>
     </main>
