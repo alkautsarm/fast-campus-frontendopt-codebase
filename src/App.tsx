@@ -1,12 +1,15 @@
-import HotelDataProvider from "./contexts/HotelDataProvider";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HotelList from "./pages/HotelList";
 
 function App() {
   return (
     <main className="max-w-screen-sm mx-auto">
-      <HotelDataProvider>
-        <HotelList />
-      </HotelDataProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HotelList />} />
+          <Route path="/hotel/:id" element={<main>To Be Implemented</main>} />
+        </Routes>
+      </BrowserRouter>
     </main>
   );
 }

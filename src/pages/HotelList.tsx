@@ -25,7 +25,7 @@ const HotelRow = memo(
   ),
 );
 
-function HotelList() {
+const Content = () => {
   const {
     selectedCategory,
     selectedPlace,
@@ -96,6 +96,14 @@ function HotelList() {
       </section>
     </main>
   );
-}
+};
+
+const HotelList = () => {
+  return (
+    <HotelDataProvider>
+      <Content />
+    </HotelDataProvider>
+  );
+};
 
 export default HotelList;
