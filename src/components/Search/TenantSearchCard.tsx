@@ -1,6 +1,6 @@
 import { Minus, Plus } from "lucide-react";
 import { TenantOptions } from "@/constants";
-import HotelDataProvider from "@/contexts/HotelDataProvider";
+import HotelListProvider from "@/contexts/HotelListProvider";
 import { TenantCounts } from "@/types";
 
 interface TenantSectionProps {
@@ -42,7 +42,7 @@ const TenantSection = ({
 
 const TenantSearchCard = () => {
   const { setTenantCounts, tenantCounts } =
-    HotelDataProvider.useHotelDataContext();
+    HotelListProvider.useHotelListContext();
 
   const updateCount = (type: keyof TenantCounts, count: number) => {
     const newCounts = { ...tenantCounts, [type]: count };

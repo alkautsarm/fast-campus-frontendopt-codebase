@@ -3,7 +3,7 @@ import { CSSProperties, memo } from "react";
 import HotelCard from "@/components/HotelCard";
 import CategoryMenu from "@/components/CategoryMenu";
 import SearchBar from "@/components/Search/SearchBar";
-import HotelDataProvider from "@/contexts/HotelDataProvider";
+import HotelListProvider from "@/contexts/HotelListProvider";
 import { IHotelData } from "@/types";
 import InfiniteLoader from "react-window-infinite-loader";
 import { FixedSizeList } from "react-window";
@@ -35,7 +35,7 @@ const Content = () => {
     hotels,
     loading,
     lastItemKey,
-  } = HotelDataProvider.useHotelDataContext();
+  } = HotelListProvider.useHotelListContext();
 
   return (
     <main className="pt-4 border-l border-r border-gray-100">
@@ -100,9 +100,9 @@ const Content = () => {
 
 const HotelList = () => {
   return (
-    <HotelDataProvider>
+    <HotelListProvider>
       <Content />
-    </HotelDataProvider>
+    </HotelListProvider>
   );
 };
 

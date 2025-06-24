@@ -1,10 +1,10 @@
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
-import HotelDataProvider from "@/contexts/HotelDataProvider";
+import HotelListProvider from "@/contexts/HotelListProvider";
 
 const DateSearchCard = () => {
   const { setSelectedDateRange, selectedDateRange } =
-    HotelDataProvider.useHotelDataContext();
+    HotelListProvider.useHotelListContext();
 
   return (
     <div>

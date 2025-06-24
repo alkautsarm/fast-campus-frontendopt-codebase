@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { formatDateLabel, formatGuestLabel } from "@/utils";
 
-import HotelDataProvider from "@/contexts/HotelDataProvider";
+import HotelListProvider from "@/contexts/HotelListProvider";
 import PlaceSearchCard from "./PlaceSearchCard";
 import TenantSearchCard from "./TenantSearchCard";
 import DateSearchCard from "./DateSearchCard";
@@ -61,7 +61,7 @@ const SearchModal = ({ isOpen, onClose, onSubmit }: SearchModalProps) => {
     setSelectedPlace,
     setSelectedDateRange,
     setTenantCounts,
-  } = HotelDataProvider.useHotelDataContext();
+  } = HotelListProvider.useHotelListContext();
 
   const [expandedCard, setExpandedCard] = useState<ESearchModalCard>(
     ESearchModalCard.Where,

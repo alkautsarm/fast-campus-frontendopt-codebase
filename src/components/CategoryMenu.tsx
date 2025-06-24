@@ -1,10 +1,10 @@
-import HotelDataProvider from "@/contexts/HotelDataProvider";
+import HotelListProvider from "@/contexts/HotelListProvider";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CategoryOptions } from "../constants";
 
 const CategoryMenu = () => {
   const { selectedCategory, handleCategorySelect } =
-    HotelDataProvider.useHotelDataContext();
+    HotelListProvider.useHotelListContext();
 
   const debouncedCategorySelect = useDebounce(handleCategorySelect, 300);
 

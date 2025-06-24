@@ -35,7 +35,7 @@ interface ILoadHotelsProps {
   dateRange?: DateRange;
 }
 
-interface HotelDataState {
+interface HotelListState {
   hotels: IHotelData[];
   loading: boolean;
   selectedCategory: EHotelCategory | null;
@@ -45,7 +45,7 @@ interface HotelDataState {
   lastItemKey: string | null;
 }
 
-type HotelDataAction =
+type HotelListAction =
   | { type: "SET_HOTELS"; payload: IHotelData[] }
   | { type: "APPEND_HOTELS"; payload: IHotelData[] }
   | { type: "RESET_HOTELS" }
@@ -56,7 +56,7 @@ type HotelDataAction =
   | { type: "SET_TENANT_COUNTS"; payload: TenantCounts }
   | { type: "SET_LAST_ITEM_KEY"; payload: string | null };
 
-const initialState: HotelDataState = {
+const initialState: HotelListState = {
   hotels: [],
   loading: false,
   selectedCategory: null,
@@ -66,10 +66,10 @@ const initialState: HotelDataState = {
   lastItemKey: null,
 };
 
-const hotelDataReducer = (
-  state: HotelDataState,
-  action: HotelDataAction,
-): HotelDataState => {
+const hotelListReducer = (
+  state: HotelListState,
+  action: HotelListAction,
+): HotelListState => {
   switch (action.type) {
     case "SET_HOTELS":
       return { ...state, hotels: action.payload };
@@ -94,7 +94,7 @@ const hotelDataReducer = (
   }
 };
 
-interface IHotelDataContext extends HotelDataState {
+interface IHotelListContext extends HotelListState {
   loadHotels: (props: ILoadHotelsProps) => void;
   setHotels: (hotels: IHotelData[]) => void;
   setLoading: (loading: boolean) => void;
@@ -109,7 +109,7 @@ interface IHotelDataContext extends HotelDataState {
   setTenantCounts: (tenantCounts: TenantCounts) => void;
 }
 
-const HotelDataContext = createContext<IHotelDataContext>({
+const HotelListContext = createContext<IHotelListContext>({
   ...initialState,
   loadHotels: () => {},
   setHotels: () => {},
@@ -121,8 +121,8 @@ const HotelDataContext = createContext<IHotelDataContext>({
   setTenantCounts: () => {},
 });
 
-const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(hotelDataReducer, initialState);
+const HotelListProvider = ({ children }: { children: React.ReactNode }) => {
+  const [state, dispatch] = useReducer(hotelListReducer, initialState);
 
   const loadHotels = useCallback(
     ({
@@ -252,7 +252,7 @@ const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
     dispatch({ type: "SET_TENANT_COUNTS", payload: tenantCounts });
   };
 
-  const contextValue: IHotelDataContext = {
+  const contextValue: IHotelListContext = {
     ...state,
     handleSearchSubmit,
     handleCategorySelect,
@@ -265,20 +265,20 @@ const HotelDataProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <HotelDataContext.Provider value={contextValue}>
+    <HotelListContext.Provider value={contextValue}>
       {children}
-    </HotelDataContext.Provider>
+    </HotelListContext.Provider>
   );
 };
 
-HotelDataProvider.useHotelDataContext = () => {
-  const context = useContext(HotelDataContext);
+HotelListProvider.useHotelListContext = () => {
+  const context = useContext(HotelListContext);
   if (!context) {
     throw new Error(
-      "useHotelDataContext must be used within a HotelDataProvider",
+      "useHotelListContext must be used within a HotelListProvider",
     );
   }
   return context;
 };
 
-export default HotelDataProvider;
+export default HotelListProvider;

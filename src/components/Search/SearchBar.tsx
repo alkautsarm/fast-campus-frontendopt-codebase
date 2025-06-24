@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Search, Settings2 } from "lucide-react";
 import { formatDateLabel, formatGuestLabel } from "@/utils";
 import SearchModal from "./SearchModal";
-import HotelDataProvider from "@/contexts/HotelDataProvider";
+import HotelListProvider from "@/contexts/HotelListProvider";
 
 const SearchBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { selectedPlace, selectedDateRange, tenantCounts, handleSearchSubmit } =
-    HotelDataProvider.useHotelDataContext();
+    HotelListProvider.useHotelListContext();
 
   const handleOpenModal = () => {
     setIsModalOpen(true);

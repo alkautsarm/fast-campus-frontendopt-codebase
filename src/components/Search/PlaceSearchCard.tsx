@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { collection, getDocs } from "firebase/firestore";
-import HotelDataProvider from "@/contexts/HotelDataProvider";
+import HotelListProvider from "@/contexts/HotelListProvider";
 import { ILocation } from "~/src/types";
 import { firestore } from "~/src/utils";
 
@@ -16,7 +16,7 @@ const fetchLocations = async (): Promise<ILocation[]> => {
 
 const PlaceSearchExpandedCard = () => {
   const { setSelectedPlace, selectedPlace } =
-    HotelDataProvider.useHotelDataContext();
+    HotelListProvider.useHotelListContext();
 
   const { data: locations = [] } = useQuery({
     queryKey: ["locations"],
