@@ -42,14 +42,18 @@ export interface IHotelData {
   imageUrl: string;
 }
 
+export enum ERatingCategory {
+  Cleanliness = "cleanliness",
+  Location = "location",
+  Communication = "communication",
+}
+
 export interface IReview {
   name: string;
   submitted_date: string;
   comment: string;
   ratings: {
-    cleanliness: number;
-    location: number;
-    communication: number;
+    [key in ERatingCategory]: number;
   };
 }
 

@@ -1,7 +1,9 @@
-import { useParams } from "react-router-dom";
+import { Route, Routes, useParams } from "react-router-dom";
 import { HotelDetailProvider } from "@/contexts/HotelDetailProvider";
 import Gallery from "@/components/Detail/Gallery";
 import Description from "@/components/Detail/Description";
+import Reviews from "@/components/Detail/Reviews";
+import ReviewsPage from "./ReviewsPage";
 
 const Content = () => {
   const { hotel } = HotelDetailProvider.useHotelDetailContext();
@@ -12,6 +14,7 @@ const Content = () => {
     <main>
       <Gallery />
       <Description />
+      <Reviews />
     </main>
   );
 };
@@ -21,7 +24,10 @@ const HotelDetail = () => {
 
   return (
     <HotelDetailProvider id={id || ""}>
-      <Content />
+      <Routes>
+        <Route path="/" element={<Content />} />
+        <Route path="/reviews" element={<ReviewsPage />} />
+      </Routes>
     </HotelDetailProvider>
   );
 };

@@ -28,7 +28,7 @@ const Description = () => {
   ];
 
   return (
-    <div className="px-6 py-4 max-w-2xl">
+    <div className="mt-4 px-6 max-w-2xl">
       <div className="mb-6 pb-6 border-b border-gray-200">
         <h1 className="text-2xl font-semibold text-gray-900 mb-2">
           {hotel.name}
@@ -63,7 +63,7 @@ const Description = () => {
       <div className="mb-6 pb-6 border-b border-gray-200">
         <div className="space-y-4">
           {features.map(({ Icon, title, description }) => (
-            <div className="flex items-start gap-4">
+            <div key={title} className="flex items-start gap-4">
               <Icon className="w-6 h-6 text-gray-600" />
               <div>
                 <h4 className="font-medium text-gray-900 mb-1">{title}</h4>
@@ -91,7 +91,7 @@ const Description = () => {
         </p>
       </div>
 
-      <div>
+      <div className="mb-6 pb-6 border-b border-gray-200">
         <p className="text-gray-600 leading-relaxed text-sm">
           {hotel.description}
         </p>

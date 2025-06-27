@@ -21,3 +21,11 @@ export const formatDate = (s: string, e: string) => {
 
   return `${startMonth} ${startDate}, ${startYear} - ${endMonth} ${endDate}, ${endYear}`;
 };
+
+export const formatReviewDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+  });
+};
