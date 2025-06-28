@@ -28,7 +28,7 @@ const Description = () => {
   ];
 
   return (
-    <div className="mt-4 px-6 max-w-2xl">
+    <section className="mt-4 mb-6 px-6">
       <div className="mb-6 pb-6 border-b border-gray-200">
         <h1 className="text-2xl font-semibold text-gray-900 mb-2">
           {hotel.name}
@@ -91,12 +91,12 @@ const Description = () => {
         </p>
       </div>
 
-      <div className="mb-6 pb-6 border-b border-gray-200">
+      <div className="pb-6 border-b border-gray-200">
         <p className="text-gray-600 leading-relaxed text-sm">
           {hotel.description}
         </p>
       </div>
-    </div>
+    </section>
   );
 };
 

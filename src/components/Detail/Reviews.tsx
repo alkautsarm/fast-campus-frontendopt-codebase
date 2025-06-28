@@ -16,7 +16,7 @@ const Reviews = () => {
   };
 
   return (
-    <div className="mb-6 px-6">
+    <section className="mb-6 px-6">
       <div className="flex items-center gap-2 mb-6">
         <Star className="w-4 h-4 fill-current" />
         <span className="text-lg font-semibold">{hotel.rating}</span>
@@ -53,7 +53,7 @@ const Reviews = () => {
       >
         Show all {reviewCount} reviews
       </button>
-    </div>
+    </section>
   );
 };
 

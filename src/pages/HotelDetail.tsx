@@ -3,6 +3,7 @@ import { HotelDetailProvider } from "@/contexts/HotelDetailProvider";
 import Gallery from "@/components/Detail/Gallery";
 import Description from "@/components/Detail/Description";
 import Reviews from "@/components/Detail/Reviews";
+import Location from "@/components/Detail/Location";
 import ReviewsPage from "./ReviewsPage";
 
 const Content = () => {
@@ -14,6 +15,7 @@ const Content = () => {
     <main>
       <Gallery />
       <Description />
+      <Location />
       <Reviews />
     </main>
   );
