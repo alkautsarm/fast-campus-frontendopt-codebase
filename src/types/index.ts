@@ -2,6 +2,7 @@ export interface ILocation {
   id: number;
   name: string;
   image: string;
+  imageWebp: string;
 }
 
 export enum EHotelCategory {
@@ -40,6 +41,7 @@ export interface IHotelData {
   rating: number;
   reviews: number;
   imageUrl: string;
+  imageUrlWebp: string;
 }
 
 export enum ERatingCategory {
@@ -87,7 +89,9 @@ export interface IHotelDetailData {
   rating: number;
   reviews: IReview[];
   imageUrl: string;
+  imageUrlWebp: string;
   photos: string[];
+  photosWebp: string[];
   host: IHost;
   description: string;
 }

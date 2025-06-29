@@ -12,6 +12,8 @@ function HotelCard({ data }: IHotelCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const navigate = useNavigate();
 
+  const imageClass = "h-[310px] w-full rounded-xl object-cover";
+
   const handleLike = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setIsLiked(!isLiked);
@@ -24,10 +26,10 @@ function HotelCard({ data }: IHotelCardProps) {
   return (
     <div onClick={handleNavigateToDetail}>
       <div className="mb-4 relative">
-        <img
-          className="h-[310px] w-full rounded-xl object-cover"
-          src={data.imageUrl}
-        />
+        <picture>
+          <source srcSet={data.imageUrlWebp} type="image/webp" />
+          <img className={imageClass} src={data.imageUrl} />
+        </picture>
         <button className="absolute top-3 right-3" onClick={handleLike}>
           <Heart className="text-white" fill={isLiked ? "white" : "gray"} />
         </button>
