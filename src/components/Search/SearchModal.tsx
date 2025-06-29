@@ -107,7 +107,7 @@ const SearchModal = ({ isOpen, onClose, onSubmit }: SearchModalProps) => {
   };
 
   const handleClearAll = () => {
-    setSelectedPlace({ id: 0, name: "Anywhere", image: "" });
+    setSelectedPlace({ id: 0, name: "Anywhere", image: "", imageWebp: "" });
     setSelectedDateRange(undefined);
     setTenantCounts({ adults: 0, children: 0, infants: 0 });
   };

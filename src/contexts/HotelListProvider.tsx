@@ -60,7 +60,7 @@ const initialState: HotelListState = {
   hotels: [],
   loading: false,
   selectedCategory: null,
-  selectedPlace: { id: 0, name: "Anywhere", image: "" },
+  selectedPlace: { id: 0, name: "Anywhere", image: "", imageWebp: "" },
   selectedDateRange: undefined,
   tenantCounts: { adults: 0, children: 0, infants: 0 },
   lastItemKey: null,
