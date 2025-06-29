@@ -1,10 +1,13 @@
 import { Route, Routes, useParams } from "react-router-dom";
+import { Suspense, lazy } from "react";
 import { HotelDetailProvider } from "@/contexts/HotelDetailProvider";
 import Gallery from "@/components/Detail/Gallery";
 import Description from "@/components/Detail/Description";
 import Reviews from "@/components/Detail/Reviews";
 import Location from "@/components/Detail/Location";
-import ReviewsPage from "./ReviewsPage";
+
+// Lazy load the ReviewsPage component
+const ReviewsPage = lazy(() => import("./ReviewsPage"));
 
 const Content = () => {
   const { hotel } = HotelDetailProvider.useHotelDetailContext();
@@ -26,10 +29,16 @@ const HotelDetail = () => {
 
   return (
     <HotelDetailProvider id={id || ""}>
-      <Routes>
-        <Route path="/" element={<Content />} />
-        <Route path="/reviews" element={<ReviewsPage />} />
-      </Routes>
+      <Suspense
+        fallback={
+          <div className="flex justify-center items-center p-4">Loading...</div>
+        }
+      >
+        <Routes>
+          <Route path="/" element={<Content />} />
+          <Route path="/reviews" element={<ReviewsPage />} />
+        </Routes>
+      </Suspense>
     </HotelDetailProvider>
   );
 };
