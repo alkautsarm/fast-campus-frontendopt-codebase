@@ -11,7 +11,7 @@ const ReviewsPage = () => {
   const { hotel } = HotelDetailProvider.useHotelDetailContext();
   const [searchQuery, setSearchQuery] = useState("");
 
-  if (!hotel) return <div>Loading...</div>;
+  if (!hotel) return null;
 
   const reviewCount = hotel.reviews.length;
 
