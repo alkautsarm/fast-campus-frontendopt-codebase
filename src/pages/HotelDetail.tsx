@@ -1,12 +1,13 @@
+import { lazy, Suspense, useState } from "react";
 import { Route, Routes, useParams } from "react-router-dom";
-import { lazy } from "react";
 import { HotelDetailProvider } from "@/contexts/HotelDetailProvider";
 import Gallery from "@/components/Detail/Gallery";
 import Description from "@/components/Detail/Description";
 import Reviews from "@/components/Detail/Reviews";
 import Location from "@/components/Detail/Location";
+import DynamicSuspenseFallback from "@/components/DynamicSuspenseFallback";
+import { fetchHotelDetail } from "@/utils";
 
-// Lazy load the ReviewsPage component
 const ReviewsPage = lazy(() => import("./ReviewsPage"));
 
 const Content = () => {
@@ -22,14 +23,17 @@ const Content = () => {
 
 const HotelDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const [fetchData] = useState(() => fetchHotelDetail(id || ""));
 
   return (
-    <HotelDetailProvider id={id || ""}>
-      <Routes>
-        <Route path="/" element={<Content />} />
-        <Route path="/reviews" element={<ReviewsPage />} />
-      </Routes>
-    </HotelDetailProvider>
+    <Suspense fallback={<DynamicSuspenseFallback />}>
+      <HotelDetailProvider fetchData={fetchData}>
+        <Routes>
+          <Route path="/" element={<Content />} />
+          <Route path="/reviews" element={<ReviewsPage />} />
+        </Routes>
+      </HotelDetailProvider>
+    </Suspense>
   );
 };
 

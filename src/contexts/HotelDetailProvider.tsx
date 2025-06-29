@@ -1,7 +1,5 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, use, useContext } from "react";
 import { IHotelDetailData } from "../types";
-import { db } from "@/utils";
-import { ref, query, orderByChild, equalTo, onValue } from "firebase/database";
 
 interface HotelDetailContextType {
   hotel: IHotelDetailData | null;
@@ -10,34 +8,13 @@ interface HotelDetailContextType {
 const HotelDetailContext = createContext<HotelDetailContextType | null>(null);
 
 export const HotelDetailProvider = ({
-  id,
+  fetchData,
   children,
 }: {
-  id: string;
+  fetchData: Promise<IHotelDetailData>;
   children: React.ReactNode;
 }) => {
-  const [hotel, setHotel] = useState<IHotelDetailData | null>(null);
-
-  useEffect(() => {
-    const fetchHotelDetail = async () => {
-      if (!id) return;
-
-      const hotelRef = query(
-        ref(db, "hotels_detail"),
-        orderByChild("id"),
-        equalTo(id),
-      );
-
-      onValue(hotelRef, (snapshot) => {
-        if (snapshot.exists()) {
-          setHotel(Object.values(snapshot.val())[0] as IHotelDetailData);
-        }
-      });
-    };
-
-    fetchHotelDetail();
-  }, [id]);
-
+  const hotel = use(fetchData);
   const contextValue = { hotel };
 
   return (
