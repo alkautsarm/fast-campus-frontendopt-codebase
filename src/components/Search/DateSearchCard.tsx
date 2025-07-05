@@ -8,7 +8,7 @@ const DateSearchCard = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-10">When's your trip?</h2>
+      <h2 className="text-2xl font-semibold mb-10">When&apos;s your trip?</h2>
       <DayPicker
         mode="range"
         selected={selectedDateRange}

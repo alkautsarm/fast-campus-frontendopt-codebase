@@ -24,6 +24,7 @@ const HotelRow = memo(
     </div>
   ),
 );
+HotelRow.displayName = "HotelRow";
 
 const Content = () => {
   const {

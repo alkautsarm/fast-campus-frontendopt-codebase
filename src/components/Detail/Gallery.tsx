@@ -58,7 +58,7 @@ const Gallery = () => {
           <div className="grid gap-2 h-full">
             <div className="grid grid-cols-2 gap-2">
               {hotel.photos.slice(0, 2).map((photo, index) => (
-                <picture>
+                <picture key={index}>
                   <source srcSet={hotel.photos[index]} type="image/webp" />
                   <img
                     src={photo}
@@ -80,7 +80,7 @@ const Gallery = () => {
             </div>
             <div className="grid grid-cols-2 gap-2">
               {hotel.photos.slice(3).map((photo, index) => (
-                <picture>
+                <picture key={index}>
                   <source
                     srcSet={hotel.photosWebp[index + 3]}
                     type="image/webp"

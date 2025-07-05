@@ -28,7 +28,7 @@ function HotelCard({ data }: IHotelCardProps) {
       <div className="mb-4 relative">
         <picture>
           <source srcSet={data.imageUrlWebp} type="image/webp" />
-          <img className={imageClass} src={data.imageUrl} />
+          <img className={imageClass} src={data.imageUrl} alt={data.name} />
         </picture>
         <button className="absolute top-3 right-3" onClick={handleLike}>
           <Heart className="text-white" fill={isLiked ? "white" : "gray"} />

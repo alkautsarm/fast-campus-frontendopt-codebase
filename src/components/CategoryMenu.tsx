@@ -23,7 +23,7 @@ const CategoryMenu = () => {
           }`}
         >
           <img
-            src={category.icon}
+            src={category.icon.src}
             alt={category.label}
             className={`w-6 h-6 mb-2 ${
               selectedCategory === category.id ? "opacity-100" : "opacity-70"

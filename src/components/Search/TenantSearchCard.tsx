@@ -52,7 +52,7 @@ const TenantSearchCard = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-10">Who's coming?</h2>
+      <h2 className="text-2xl font-semibold mb-10">Who&apos;s coming?</h2>
 
       <div className="space-y-8">
         {TenantOptions.map((option) => (
