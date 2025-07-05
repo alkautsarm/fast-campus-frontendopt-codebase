@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { formatDateLabel, formatGuestLabel } from "@/utils";
-
 import HotelListProvider from "@/contexts/HotelListProvider";
+import { formatDateLabel, formatGuestLabel } from "@/utils";
+import { ESearchModalCard } from "@/types";
 import PlaceSearchCard from "./PlaceSearchCard";
 import TenantSearchCard from "./TenantSearchCard";
 import DateSearchCard from "./DateSearchCard";
@@ -17,12 +16,6 @@ interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: () => void;
-}
-
-enum ESearchModalCard {
-  Where = 1,
-  When = 2,
-  Who = 3,
 }
 
 const SearchModalCards: SearchModalCard[] = [
@@ -61,11 +54,9 @@ const SearchModal = ({ isOpen, onClose, onSubmit }: SearchModalProps) => {
     setSelectedPlace,
     setSelectedDateRange,
     setTenantCounts,
+    expandedCard,
+    setExpandedCard,
   } = HotelListProvider.useHotelListContext();
-
-  const [expandedCard, setExpandedCard] = useState<ESearchModalCard>(
-    ESearchModalCard.Where,
-  );
 
   const getCardContent = (card: SearchModalCard) => {
     if (expandedCard !== card.id) {

@@ -1,12 +1,21 @@
+"use client";
+
 import {
   createContext,
   useCallback,
   useContext,
   useEffect,
   useReducer,
+  useState,
 } from "react";
 import { DateRange } from "react-day-picker";
-import { EHotelCategory, IHotelData, ILocation, TenantCounts } from "@/types";
+import {
+  EHotelCategory,
+  ESearchModalCard,
+  IHotelData,
+  ILocation,
+  TenantCounts,
+} from "@/types";
 import {
   query,
   startAfter,
@@ -95,6 +104,11 @@ const hotelListReducer = (
 };
 
 interface IHotelListContext extends HotelListState {
+  isModalOpen: boolean;
+  setIsModalOpen: (isModalOpen: boolean) => void;
+  expandedCard: ESearchModalCard;
+  setExpandedCard: (expandedCard: ESearchModalCard) => void;
+
   loadHotels: (props: ILoadHotelsProps) => void;
   setHotels: (hotels: IHotelData[]) => void;
   setLoading: (loading: boolean) => void;
@@ -111,6 +125,10 @@ interface IHotelListContext extends HotelListState {
 
 const HotelListContext = createContext<IHotelListContext>({
   ...initialState,
+  isModalOpen: false,
+  setIsModalOpen: () => {},
+  expandedCard: ESearchModalCard.Where,
+  setExpandedCard: () => {},
   loadHotels: () => {},
   setHotels: () => {},
   setLoading: () => {},
@@ -122,6 +140,8 @@ const HotelListContext = createContext<IHotelListContext>({
 });
 
 const HotelListProvider = ({ children }: { children: React.ReactNode }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [expandedCard, setExpandedCard] = useState(ESearchModalCard.Where);
   const [state, dispatch] = useReducer(hotelListReducer, initialState);
 
   const loadHotels = useCallback(
@@ -254,6 +274,10 @@ const HotelListProvider = ({ children }: { children: React.ReactNode }) => {
 
   const contextValue: IHotelListContext = {
     ...state,
+    isModalOpen,
+    setIsModalOpen,
+    expandedCard,
+    setExpandedCard,
     handleSearchSubmit,
     handleCategorySelect,
     loadHotels,

@@ -1,18 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { collection, getDocs } from "firebase/firestore";
 import HotelListProvider from "@/contexts/HotelListProvider";
-import { ILocation } from "@/types";
-import { firestore } from "@/utils";
+import { fetchLocations } from "@/utils";
 
 const defaultImageWrapper =
   "relative aspect-square rounded-2xl overflow-hidden mb-2";
-
-const fetchLocations = async (): Promise<ILocation[]> => {
-  const locationCollection = collection(firestore, "location");
-  const querySnapshot = await getDocs(locationCollection);
-
-  return querySnapshot.docs.map((doc) => doc.data() as ILocation);
-};
+const imageClass =
+  "w-full h-full object-cover hover:scale-110 transition-transform duration-200";
 
 const PlaceSearchExpandedCard = () => {
   const { setSelectedPlace, selectedPlace } =
@@ -22,9 +15,6 @@ const PlaceSearchExpandedCard = () => {
     queryKey: ["locations"],
     queryFn: fetchLocations,
   });
-
-  const imageClass =
-    "w-full h-full object-cover hover:scale-110 transition-transform duration-200";
 
   return (
     <div>

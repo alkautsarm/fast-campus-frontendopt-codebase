@@ -1,3 +1,8 @@
+export enum ESearchModalCard {
+  Where = 1,
+  When = 2,
+  Who = 3,
+}
 export interface ILocation {
   id: number;
   name: string;

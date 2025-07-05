@@ -1,13 +1,15 @@
-import { CSSProperties, memo } from "react";
+"use client";
 
-import HotelCard from "@/components/HotelCard";
-import CategoryMenu from "@/components/CategoryMenu";
-import SearchBar from "@/components/Search/SearchBar";
-import HotelListProvider from "@/contexts/HotelListProvider";
-import { IHotelData } from "@/types";
+import { CSSProperties, memo } from "react";
 import InfiniteLoader from "react-window-infinite-loader";
 import { FixedSizeList } from "react-window";
 import { CircleX } from "lucide-react";
+
+import HotelCard from "@/components/List/HotelCard";
+import CategoryMenu from "@/components/List/CategoryMenu";
+import SearchBar from "@/components/List/Search/SearchBar";
+import HotelListProvider from "@/contexts/HotelListProvider";
+import { IHotelData } from "@/types";
 
 const HotelRow = memo(
   ({

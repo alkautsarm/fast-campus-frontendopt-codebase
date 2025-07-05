@@ -1,6 +1,7 @@
 import { ref, query, orderByChild, equalTo, onValue } from "firebase/database";
-import { db } from "./db";
-import { IHotelDetailData } from "@/types";
+import { db, firestore } from "./db";
+import { IHotelDetailData, ILocation } from "@/types";
+import { collection, getDocs } from "firebase/firestore";
 
 export const fetchHotelDetail = (id: string) => {
   return new Promise<IHotelDetailData>((res) => {
@@ -18,4 +19,11 @@ export const fetchHotelDetail = (id: string) => {
       }
     });
   });
+};
+
+export const fetchLocations = async (): Promise<ILocation[]> => {
+  const locationCollection = collection(firestore, "location");
+  const querySnapshot = await getDocs(locationCollection);
+
+  return querySnapshot.docs.map((doc) => doc.data() as ILocation);
 };

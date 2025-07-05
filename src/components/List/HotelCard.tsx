@@ -1,38 +1,25 @@
-import { useNavigate } from "react-router-dom";
-import { Heart, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { IHotelData } from "@/types";
-import { memo, useState } from "react";
+import { memo } from "react";
 import { formatDate } from "@/utils";
+import Link from "next/link";
+import HotelCardLikeButton from "./HotelCardLikeButton";
 
 interface IHotelCardProps {
   data: IHotelData;
 }
 
+const imageClass = "h-[310px] w-full rounded-xl object-cover";
+
 function HotelCard({ data }: IHotelCardProps) {
-  const [isLiked, setIsLiked] = useState(false);
-  const navigate = useNavigate();
-
-  const imageClass = "h-[310px] w-full rounded-xl object-cover";
-
-  const handleLike = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    setIsLiked(!isLiked);
-  };
-
-  const handleNavigateToDetail = () => {
-    navigate(`/hotel/${data.id}`);
-  };
-
   return (
-    <div onClick={handleNavigateToDetail}>
+    <Link href={`/hotel/${data.id}`}>
       <div className="mb-4 relative">
         <picture>
           <source srcSet={data.imageUrlWebp} type="image/webp" />
           <img className={imageClass} src={data.imageUrl} alt={data.name} />
         </picture>
-        <button className="absolute top-3 right-3" onClick={handleLike}>
-          <Heart className="text-white" fill={isLiked ? "white" : "gray"} />
-        </button>
+        <HotelCardLikeButton />
       </div>
 
       <div>
@@ -57,7 +44,7 @@ function HotelCard({ data }: IHotelCardProps) {
           <span className="font-semibold">${data.pricePerNight}</span> night
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
