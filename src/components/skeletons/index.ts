@@ -4,7 +4,7 @@ export { default as CategoryMenuSkeleton } from "./CategoryMenuSkeleton";
 export { default as GallerySkeleton } from "./GallerySkeleton";
 export { default as DescriptionSkeleton } from "./DescriptionSkeleton";
 export { default as ReviewsSkeleton } from "./ReviewsSkeleton";
-export { default as ReviewsPageSkeleton } from "./ReviewsPageSkeleton";
 export { default as LocationSkeleton } from "./LocationSkeleton";
 export { default as HotelListSkeleton } from "./HotelListSkeleton";
 export { default as HotelDetailSkeleton } from "./HotelDetailSkeleton";
+export { default as HotelReviewsSkeleton } from "./HotelReviewsSkeleton";

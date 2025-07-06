@@ -13,7 +13,7 @@ const imageClass = "h-[310px] w-full rounded-xl object-cover";
 
 function HotelCard({ data }: IHotelCardProps) {
   return (
-    <Link href={`/hotel/${data.id}`}>
+    <Link href={`/hotels/${data.id}`}>
       <div className="mb-4 relative">
         <picture>
           <source srcSet={data.imageUrlWebp} type="image/webp" />

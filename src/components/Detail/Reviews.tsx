@@ -1,19 +1,16 @@
+"use client";
+
+import Link from "next/link";
 import { Star } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { HotelDetailProvider } from "@/contexts/HotelDetailProvider";
 import { formatReviewDate } from "@/utils/date";
 
 const Reviews = () => {
-  const navigate = useNavigate();
   const { hotel } = HotelDetailProvider.useHotelDetailContext();
 
   if (!hotel) return null;
 
   const reviewCount = hotel.reviews.length;
-
-  const handleShowAllReviews = () => {
-    navigate(`/hotel/${hotel.id}/reviews`);
-  };
 
   return (
     <section className="mb-6 px-6">
@@ -47,12 +44,11 @@ const Reviews = () => {
         </div>
       </div>
 
-      <button
-        onClick={handleShowAllReviews}
-        className="w-full py-3 border border-black rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors"
-      >
-        Show all {reviewCount} reviews
-      </button>
+      <Link href={`/hotels/${hotel.id}/reviews`}>
+        <button className="w-full py-3 border border-black rounded-lg font-medium text-sm hover:bg-gray-50 transition-colors">
+          Show all {reviewCount} reviews
+        </button>
+      </Link>
     </section>
   );
 };

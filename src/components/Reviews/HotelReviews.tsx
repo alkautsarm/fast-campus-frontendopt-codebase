@@ -1,13 +1,17 @@
+"use client";
+
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { ERatingCategory } from "@/types";
+import Link from "next/link";
 import { ChevronLeft, Star, Search } from "lucide-react";
+import { ERatingCategory } from "@/types";
 import { HotelDetailProvider } from "@/contexts/HotelDetailProvider";
 import { formatReviewDate } from "@/utils/date";
 
-const ReviewsPage = () => {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+interface ReviewsPageProps {
+  id: string;
+}
+
+const ReviewsPageContent = ({ id }: ReviewsPageProps) => {
   const { hotel } = HotelDetailProvider.useHotelDetailContext();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -30,20 +34,16 @@ const ReviewsPage = () => {
       review.comment.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const handleBack = () => {
-    navigate(`/hotel/${id}`);
-  };
-
   return (
     <div className="min-h-screen bg-white">
-      <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+      <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 z-1">
         <div className="flex items-center gap-4">
-          <button
-            onClick={handleBack}
+          <Link
+            href={`/hotels/${id}`}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ChevronLeft className="w-6 h-6" />
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -125,4 +125,12 @@ const ReviewsPage = () => {
   );
 };
 
-export default ReviewsPage;
+const HotelReviews = ({ id }: ReviewsPageProps) => {
+  return (
+    <HotelDetailProvider id={id}>
+      <ReviewsPageContent id={id} />
+    </HotelDetailProvider>
+  );
+};
+
+export default HotelReviews;

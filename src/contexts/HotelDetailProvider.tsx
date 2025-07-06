@@ -1,21 +1,33 @@
-import { createContext, use, useContext } from "react";
+"use client";
+
+import { createContext, useContext } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchHotelDetail } from "@/utils";
 import { IHotelDetailData } from "../types";
 
 interface HotelDetailContextType {
   hotel: IHotelDetailData | null;
+  loading: boolean;
 }
 
 const HotelDetailContext = createContext<HotelDetailContextType | null>(null);
 
 export const HotelDetailProvider = ({
-  fetchData,
+  id,
   children,
 }: {
-  fetchData: Promise<IHotelDetailData>;
+  id: string;
   children: React.ReactNode;
 }) => {
-  const hotel = use(fetchData);
-  const contextValue = { hotel };
+  const { data: hotel, isLoading } = useQuery({
+    queryKey: ["hotel", id],
+    queryFn: () => fetchHotelDetail(id),
+  });
+
+  const contextValue = {
+    hotel: hotel || null,
+    loading: isLoading,
+  };
 
   return (
     <HotelDetailContext.Provider value={contextValue}>

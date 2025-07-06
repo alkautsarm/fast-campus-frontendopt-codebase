@@ -1,6 +1,6 @@
 import { ChevronLeft, Star, Search } from "lucide-react";
 
-const ReviewsPageSkeleton = () => {
+const HotelReviewsSkeleton = () => {
   return (
     <div className="min-h-screen bg-white animate-pulse">
       {/* Header */}
@@ -68,4 +68,4 @@ const ReviewsPageSkeleton = () => {
   );
 };
 
-export default ReviewsPageSkeleton;
+export default HotelReviewsSkeleton;
