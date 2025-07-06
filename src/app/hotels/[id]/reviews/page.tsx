@@ -2,13 +2,9 @@ import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import { fetchHotelDetail, queryClient } from "@/utils";
 import ReviewsPage from "@/components/Reviews/HotelReviews";
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
+type Params = Promise<{ id: string }>;
 
-const Page = async ({ params }: PageProps) => {
+const Page = async ({ params }: { params: Params }) => {
   const { id } = await params;
 
   await queryClient.prefetchQuery({

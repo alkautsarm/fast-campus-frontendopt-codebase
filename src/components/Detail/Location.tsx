@@ -5,7 +5,7 @@ const Location = () => {
   const { hotel } = HotelDetailContext.useHotelDetailContext();
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY || "",
   });
 
   const center = {
