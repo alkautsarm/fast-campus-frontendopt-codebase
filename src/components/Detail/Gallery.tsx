@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { HotelDetailProvider } from "@/contexts/HotelDetailProvider";
 import Link from "next/link";
+import Image from "next/image";
 
 const Gallery = () => {
   const { hotel } = HotelDetailProvider.useHotelDetailContext();
@@ -21,15 +22,17 @@ const Gallery = () => {
 
   return (
     <section className="relative">
-      <picture>
-        <source srcSet={hotel.imageUrlWebp} type="image/webp" />
-        <img
+      <div className="relative w-full h-80">
+        <Image
           src={hotel.imageUrl}
           alt={hotel.name}
-          className="w-full h-80 object-cover cursor-pointer"
+          fill
+          className="object-cover cursor-pointer"
           onClick={handleOpenPhotosModal}
+          sizes="100vw"
+          priority
         />
-      </picture>
+      </div>
 
       <Link
         href="/"
@@ -56,39 +59,39 @@ const Gallery = () => {
           <div className="grid gap-2 h-full">
             <div className="grid grid-cols-2 gap-2">
               {hotel.photos.slice(0, 2).map((photo, index) => (
-                <picture key={index}>
-                  <source srcSet={hotel.photos[index]} type="image/webp" />
-                  <img
+                <div key={index} className="relative w-full h-64">
+                  <Image
                     src={photo}
                     alt={`${hotel.name} photo ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="50vw"
                   />
-                </picture>
+                </div>
               ))}
             </div>
             <div className="grid grid-cols-1">
-              <picture>
-                <source srcSet={hotel.photosWebp[2]} type="image/webp" />
-                <img
+              <div className="relative w-full h-64">
+                <Image
                   src={hotel.photos[2]}
                   alt={`${hotel.name} photo 3`}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="100vw"
                 />
-              </picture>
+              </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {hotel.photos.slice(3).map((photo, index) => (
-                <picture key={index}>
-                  <source
-                    srcSet={hotel.photosWebp[index + 3]}
-                    type="image/webp"
-                  />
-                  <img
+                <div key={index} className="relative w-full h-64">
+                  <Image
                     src={photo}
                     alt={`${hotel.name} photo ${index + 4}`}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
+                    sizes="50vw"
                   />
-                </picture>
+                </div>
               ))}
             </div>
           </div>

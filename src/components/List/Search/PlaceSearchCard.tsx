@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import HotelListProvider from "@/contexts/HotelListProvider";
 import { fetchLocations } from "@/utils";
+import Image from "next/image";
 
 const defaultImageWrapper =
   "relative aspect-square rounded-2xl overflow-hidden mb-2";
@@ -26,14 +27,13 @@ const PlaceSearchExpandedCard = () => {
             <div
               className={`${defaultImageWrapper} ${selectedPlace.id === location.id ? "ring-2 ring-black" : ""}`}
             >
-              <picture>
-                <source srcSet={location.imageWebp} type="image/webp" />
-                <img
-                  className={imageClass}
-                  src={location.image}
-                  alt={location.name}
-                />
-              </picture>
+              <Image
+                className={imageClass}
+                src={location.image}
+                alt={location.name}
+                fill
+                sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
+              />
             </div>
             <p className="text-sm font-medium text-center">{location.name}</p>
           </button>

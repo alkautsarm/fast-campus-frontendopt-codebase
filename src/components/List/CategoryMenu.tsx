@@ -1,6 +1,7 @@
 import HotelListProvider from "@/contexts/HotelListProvider";
 import { useDebounce } from "@/hooks/useDebounce";
 import { CategoryOptions } from "@/constants";
+import Image from "next/image";
 
 const CategoryMenu = () => {
   const { selectedCategory, handleCategorySelect } =
@@ -22,9 +23,11 @@ const CategoryMenu = () => {
             selectedCategory === category.id ? "text-gray-900" : "text-gray-500"
           }`}
         >
-          <img
+          <Image
             src={category.icon.src}
             alt={category.label}
+            width={24}
+            height={24}
             className={`w-6 h-6 mb-2 ${
               selectedCategory === category.id ? "opacity-100" : "opacity-70"
             }`}

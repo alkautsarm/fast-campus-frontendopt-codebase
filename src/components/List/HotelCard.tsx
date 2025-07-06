@@ -3,22 +3,26 @@ import { IHotelData } from "@/types";
 import { memo } from "react";
 import { formatDate } from "@/utils";
 import Link from "next/link";
+import Image from "next/image";
 import HotelCardLikeButton from "./HotelCardLikeButton";
 
 interface IHotelCardProps {
   data: IHotelData;
 }
 
-const imageClass = "h-[310px] w-full rounded-xl object-cover";
-
 function HotelCard({ data }: IHotelCardProps) {
   return (
     <Link href={`/hotels/${data.id}`}>
       <div className="mb-4 relative">
-        <picture>
-          <source srcSet={data.imageUrlWebp} type="image/webp" />
-          <img className={imageClass} src={data.imageUrl} alt={data.name} />
-        </picture>
+        <div className="relative h-[310px] w-full rounded-xl overflow-hidden">
+          <Image
+            className="object-cover"
+            src={data.imageUrl}
+            alt={data.name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        </div>
         <HotelCardLikeButton />
       </div>
 
