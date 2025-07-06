@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, memo } from "react";
+import { CSSProperties, memo, useEffect, useState } from "react";
 import InfiniteLoader from "react-window-infinite-loader";
 import { FixedSizeList } from "react-window";
 import { CircleX } from "lucide-react";
@@ -39,6 +39,11 @@ const Content = () => {
     loading,
     lastItemKey,
   } = HotelListProvider.useHotelListContext();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <main className="pt-4 border-l border-r border-gray-100">
@@ -89,7 +94,7 @@ const Content = () => {
                 onItemsRendered={onItemsRendered}
                 ref={ref}
                 width="100%"
-                height={window.innerHeight - 226}
+                height={isClient ? window.innerHeight - 226 : 1500}
               >
                 {HotelRow}
               </FixedSizeList>

@@ -7,7 +7,7 @@ const HotelCardLikeButton = () => {
   const [isLiked, setIsLiked] = useState(false);
 
   const handleLike = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
+    e.preventDefault();
     setIsLiked(!isLiked);
   };
 

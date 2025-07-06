@@ -11,6 +11,15 @@ export const CategoryOptions = [
   { id: EHotelCategory.Arctic, icon: arcticIcon, label: "Arctic" },
 ];
 
+export const HotelListLimit = 5;
+export const DbPath = {
+  default: "hotels",
+  category: "hotels_type",
+  location: "hotels_location",
+  categoryLocation: "hotels_type_location",
+  detail: "hotels_detail",
+};
+
 export const TenantOptions = [
   {
     title: "Adults",
