@@ -56,6 +56,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
+
+      if (!user) setShowAuthModal(true);
     });
 
     return unsubscribe;

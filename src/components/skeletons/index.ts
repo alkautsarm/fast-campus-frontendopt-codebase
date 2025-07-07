@@ -8,3 +8,4 @@ export { default as LocationSkeleton } from "./LocationSkeleton";
 export { default as HotelListSkeleton } from "./HotelListSkeleton";
 export { default as HotelDetailSkeleton } from "./HotelDetailSkeleton";
 export { default as HotelReviewsSkeleton } from "./HotelReviewsSkeleton";
+export { default as WishlistSkeleton } from "./WishlistSkeleton";

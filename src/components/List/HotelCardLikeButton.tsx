@@ -29,6 +29,10 @@ const HotelCardLikeButton = ({ hotelData }: HotelCardLikeButtonProps) => {
       queryClient.invalidateQueries({
         queryKey: ["wishlist", user?.uid, hotelData.id],
       });
+      // Also invalidate the main wishlist query to update the wishlist page
+      queryClient.invalidateQueries({
+        queryKey: ["wishlist", user?.uid],
+      });
     },
   });
 
@@ -39,6 +43,10 @@ const HotelCardLikeButton = ({ hotelData }: HotelCardLikeButtonProps) => {
       // Invalidate the wishlist query to refetch the status
       queryClient.invalidateQueries({
         queryKey: ["wishlist", user?.uid, hotelData.id],
+      });
+      // Also invalidate the main wishlist query to update the wishlist page
+      queryClient.invalidateQueries({
+        queryKey: ["wishlist", user?.uid],
       });
     },
   });

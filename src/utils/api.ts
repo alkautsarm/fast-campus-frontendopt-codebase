@@ -17,6 +17,8 @@ import {
   setDoc,
   deleteDoc,
   getDoc,
+  where,
+  query as firestoreQuery,
 } from "firebase/firestore";
 import { DateRange } from "react-day-picker";
 import { db, firestore } from "./db";
@@ -152,4 +154,17 @@ export const isInWishlist = async (
   const wishlistRef = doc(firestore, "user_wishlist", `${userId}_${hotelId}`);
   const docSnap = await getDoc(wishlistRef);
   return docSnap.exists();
+};
+
+export const fetchUserWishlist = async (
+  userId: string,
+): Promise<IWishlist[]> => {
+  const wishlistCollection = collection(firestore, "user_wishlist");
+  const q = firestoreQuery(wishlistCollection, where("userId", "==", userId));
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs.map((doc) => {
+    const data = doc.data() as IWishlist;
+    return data;
+  });
 };

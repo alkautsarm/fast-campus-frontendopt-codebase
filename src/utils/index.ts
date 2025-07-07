@@ -8,5 +8,6 @@ export {
   addToWishlist,
   removeFromWishlist,
   isInWishlist,
+  fetchUserWishlist,
 } from "./api";
 export { queryClient } from "./queryClient";
