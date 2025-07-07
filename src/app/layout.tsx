@@ -6,12 +6,28 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { queryClient } from "@/utils";
 import { Inter } from "next/font/google";
+import { AuthProvider, useAuth } from "@/contexts/AuthProvider";
+import AuthModal from "@/components/AuthModal";
 
 const inter = Inter({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   style: ["normal", "italic"],
 });
+
+const AppContent = ({ children }: { children: React.ReactNode }) => {
+  const { showAuthModal, closeAuthModal } = useAuth();
+
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        {children}
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+      <AuthModal isOpen={showAuthModal} onClose={closeAuthModal} />
+    </>
+  );
+};
 
 export default function RootLayout({
   children,
@@ -25,10 +41,9 @@ export default function RootLayout({
       </head>
       <body>
         <div id="root" className="max-w-screen-sm mx-auto">
-          <QueryClientProvider client={queryClient}>
-            {children}
-            <ReactQueryDevtools initialIsOpen={false} />
-          </QueryClientProvider>
+          <AuthProvider>
+            <AppContent>{children}</AppContent>
+          </AuthProvider>
         </div>
       </body>
     </html>

@@ -10,7 +10,14 @@ import {
   orderByKey,
   startAt,
 } from "firebase/database";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  doc,
+  setDoc,
+  deleteDoc,
+  getDoc,
+} from "firebase/firestore";
 import { DateRange } from "react-day-picker";
 import { db, firestore } from "./db";
 import {
@@ -18,6 +25,7 @@ import {
   IHotelDetailData,
   ILocation,
   EHotelCategory,
+  IWishlist,
 } from "@/types";
 import { DbPath, HotelListLimit } from "@/constants";
 
@@ -108,4 +116,40 @@ export const fetchLocations = async (): Promise<ILocation[]> => {
   const querySnapshot = await getDocs(locationCollection);
 
   return querySnapshot.docs.map((doc) => doc.data() as ILocation);
+};
+
+export const addToWishlist = async (
+  userId: string,
+  hotelData: IHotelData,
+): Promise<void> => {
+  const wishlistRef = doc(
+    firestore,
+    "user_wishlist",
+    `${userId}_${hotelData.id}`,
+  );
+  const wishlistItem: IWishlist = {
+    id: `${userId}_${hotelData.id}`,
+    userId,
+    hotelData,
+    createdAt: new Date(),
+  };
+
+  await setDoc(wishlistRef, wishlistItem);
+};
+
+export const removeFromWishlist = async (
+  userId: string,
+  hotelId: string,
+): Promise<void> => {
+  const wishlistRef = doc(firestore, "user_wishlist", `${userId}_${hotelId}`);
+  await deleteDoc(wishlistRef);
+};
+
+export const isInWishlist = async (
+  userId: string,
+  hotelId: string,
+): Promise<boolean> => {
+  const wishlistRef = doc(firestore, "user_wishlist", `${userId}_${hotelId}`);
+  const docSnap = await getDoc(wishlistRef);
+  return docSnap.exists();
 };

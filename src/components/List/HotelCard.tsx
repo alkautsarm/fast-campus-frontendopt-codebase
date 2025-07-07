@@ -23,7 +23,7 @@ function HotelCard({ data }: IHotelCardProps) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
-        <HotelCardLikeButton />
+        <HotelCardLikeButton hotelData={data} />
       </div>
 
       <div>

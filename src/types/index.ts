@@ -100,3 +100,10 @@ export interface IHotelDetailData {
   host: IHost;
   description: string;
 }
+
+export interface IWishlist {
+  id: string;
+  userId: string;
+  hotelData: IHotelData;
+  createdAt: Date;
+}
