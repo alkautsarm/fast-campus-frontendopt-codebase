@@ -28,6 +28,7 @@ import {
   ILocation,
   EHotelCategory,
   IWishlist,
+  IBooking,
 } from "@/types";
 import { DbPath, HotelListLimit } from "@/constants";
 
@@ -165,6 +166,42 @@ export const fetchUserWishlist = async (
 
   return querySnapshot.docs.map((doc) => {
     const data = doc.data() as IWishlist;
+    return data;
+  });
+};
+
+export const addToBooking = async (
+  userId: string,
+  hotelData: IHotelData,
+  reservedDates: { from: number; to: number },
+  totalNights: number,
+  totalPrice: number,
+): Promise<void> => {
+  const bookingId = `${userId}_${hotelData.id}_${Date.now()}`;
+  const bookingRef = doc(firestore, "user_booking", bookingId);
+  const bookingItem: IBooking = {
+    id: bookingId,
+    userId,
+    hotelData,
+    reservedDates,
+    totalNights,
+    totalPrice,
+    createdAt: new Date().getTime(),
+  };
+
+  await setDoc(bookingRef, bookingItem);
+};
+
+export const fetchUserBookings = async (
+  userId: string,
+): Promise<IBooking[]> => {
+  const bookingCollection = collection(firestore, "user_booking");
+  const q = firestoreQuery(bookingCollection, where("userId", "==", userId));
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs.map((doc) => {
+    const data = doc.data() as IBooking;
+
     return data;
   });
 };

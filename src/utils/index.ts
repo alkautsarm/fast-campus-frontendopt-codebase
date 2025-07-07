@@ -9,5 +9,7 @@ export {
   removeFromWishlist,
   isInWishlist,
   fetchUserWishlist,
+  addToBooking,
+  fetchUserBookings,
 } from "./api";
 export { queryClient } from "./queryClient";

@@ -111,7 +111,7 @@ const SearchModal = ({ isOpen, onClose, onSubmit }: SearchModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-2 bg-white/50 backdrop-blur-3xl overflow-hidden">
+    <div className="fixed inset-0 z-55 bg-white/50 backdrop-blur-3xl overflow-hidden">
       <div className="h-full flex flex-col">
         <SearchModalHeader onClose={handleClose} />
 

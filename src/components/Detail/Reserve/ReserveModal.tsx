@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { X } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "@/contexts/AuthProvider";
+import { addToBooking } from "@/utils";
+import { IHotelData } from "@/types";
 import HotelDetailProvider from "@/contexts/HotelDetailProvider";
 import ReserveDateCard from "./ReserveDateCard";
 
@@ -13,10 +17,41 @@ interface ReserveModalProps {
 
 const ReserveModal = ({ isOpen, onClose }: ReserveModalProps) => {
   const { hotel } = HotelDetailProvider.useHotelDetailContext();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [selectedDateRange, setSelectedDateRange] = useState<
     DateRange | undefined
   >(undefined);
   const [errors, setErrors] = useState<string[]>([]);
+
+  // Mutation for booking
+  const bookingMutation = useMutation({
+    mutationFn: ({
+      userId,
+      hotelData,
+      reservedDates,
+      totalNights,
+      totalPrice,
+    }: {
+      userId: string;
+      hotelData: IHotelData;
+      reservedDates: { from: number; to: number };
+      totalNights: number;
+      totalPrice: number;
+    }) =>
+      addToBooking(userId, hotelData, reservedDates, totalNights, totalPrice),
+    onSuccess: () => {
+      // Invalidate the bookings query to refetch trips
+      queryClient.invalidateQueries({
+        queryKey: ["bookings", user?.uid],
+      });
+      onClose();
+    },
+    onError: (error) => {
+      console.error("Error confirming reservation:", error);
+      setErrors(["Failed to confirm reservation. Please try again."]);
+    },
+  });
 
   if (!hotel || !isOpen) return null;
 
@@ -49,14 +84,36 @@ const ReserveModal = ({ isOpen, onClose }: ReserveModalProps) => {
   };
 
   const handleConfirm = () => {
-    if (validateSelection()) {
-      // TODO: Handle reservation confirmation
-      console.log("Reservation confirmed:", {
-        hotel: hotel.name,
-        dates: selectedDateRange,
-      });
-      onClose();
-    }
+    if (!user || !validateSelection()) return;
+
+    const nights = calculateNights();
+    const totalPrice = calculateTotal();
+
+    const hotelData = {
+      id: hotel.id,
+      name: hotel.name,
+      type: hotel.type,
+      location: hotel.location,
+      distance: hotel.distance,
+      capacity: hotel.capacity,
+      availableDates: hotel.availableDates,
+      pricePerNight: hotel.pricePerNight,
+      rating: hotel.rating,
+      reviews: hotel.reviews.length,
+      imageUrl: hotel.imageUrl,
+      imageUrlWebp: hotel.imageUrlWebp || "",
+    };
+
+    bookingMutation.mutate({
+      userId: user.uid,
+      hotelData,
+      reservedDates: {
+        from: selectedDateRange!.from!.getTime(),
+        to: selectedDateRange!.to!.getTime(),
+      },
+      totalNights: nights,
+      totalPrice,
+    });
   };
 
   const calculateNights = () => {
@@ -67,6 +124,9 @@ const ReserveModal = ({ isOpen, onClose }: ReserveModalProps) => {
     ) {
       return 0;
     }
+
+    if (selectedDateRange.from === selectedDateRange.to) return 1;
+
     const timeDiff =
       selectedDateRange.to.getTime() - selectedDateRange.from.getTime();
     return Math.ceil(timeDiff / (1000 * 3600 * 24));
@@ -124,9 +184,12 @@ const ReserveModal = ({ isOpen, onClose }: ReserveModalProps) => {
           </div>
           <button
             onClick={handleConfirm}
-            className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-lg font-medium"
+            disabled={bookingMutation.isPending}
+            className="w-full bg-red-500 hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-3 rounded-lg font-medium"
           >
-            Confirm Reservation
+            {bookingMutation.isPending
+              ? "Confirming..."
+              : "Confirm Reservation"}
           </button>
         </div>
       </div>

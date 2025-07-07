@@ -107,3 +107,16 @@ export interface IWishlist {
   hotelData: IHotelData;
   createdAt: Date;
 }
+
+export interface IBooking {
+  id: string;
+  userId: string;
+  hotelData: IHotelData;
+  reservedDates: {
+    from: number;
+    to: number;
+  };
+  totalNights: number;
+  totalPrice: number;
+  createdAt: number;
+}
