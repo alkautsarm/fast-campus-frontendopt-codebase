@@ -94,7 +94,7 @@ const Content = () => {
                 onItemsRendered={onItemsRendered}
                 ref={ref}
                 width="100%"
-                height={isClient ? window.innerHeight - 226 : 1500}
+                height={isClient ? window.innerHeight - 300 : 1500}
               >
                 {HotelRow}
               </FixedSizeList>

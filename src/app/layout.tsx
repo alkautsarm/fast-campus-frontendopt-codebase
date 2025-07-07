@@ -8,6 +8,7 @@ import { queryClient } from "@/utils";
 import { Inter } from "next/font/google";
 import { AuthProvider, useAuth } from "@/contexts/AuthProvider";
 import AuthModal from "@/components/AuthModal";
+import BottomNavbar from "@/components/BottomNavbar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,10 +22,11 @@ const AppContent = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <div>{children}</div>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
       <AuthModal isOpen={showAuthModal} onClose={closeAuthModal} />
+      <BottomNavbar />
     </>
   );
 };
