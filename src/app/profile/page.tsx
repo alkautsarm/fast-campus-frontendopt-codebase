@@ -6,16 +6,40 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { changeUserPassword } from "@/utils/api";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+// Define the form data type
+interface PasswordChangeForm {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
 
 const ProfilePage = () => {
   const { isAuthenticated, user, logout, loading } = useAuth();
   const router = useRouter();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordChangeSuccess, setPasswordChangeSuccess] = useState(false);
+
+  // React Hook Form setup
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    watch,
+    reset,
+  } = useForm<PasswordChangeForm>({
+    mode: "onChange",
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
+  });
+
+  // Watch newPassword to validate confirmPassword
+  const newPassword = watch("newPassword");
 
   const passwordMutation = useMutation({
     mutationFn: async ({
@@ -30,9 +54,7 @@ const ProfilePage = () => {
     },
     onSuccess: () => {
       setPasswordChangeSuccess(true);
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      reset(); // Reset form using React Hook Form
       setTimeout(() => setPasswordChangeSuccess(false), 3000);
     },
     onError: (error) => {
@@ -49,28 +71,16 @@ const ProfilePage = () => {
     }
   };
 
-  const handlePasswordChange = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (newPassword !== confirmPassword) {
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      return;
-    }
-
-    passwordMutation.mutate({ currentPassword, newPassword });
+  const onSubmit = (data: PasswordChangeForm) => {
+    passwordMutation.mutate({
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+    });
   };
 
   if (!isAuthenticated && !loading) {
     return null;
   }
-
-  const isPasswordFormValid =
-    currentPassword.length > 0 &&
-    newPassword.length >= 6 &&
-    newPassword === confirmPassword;
 
   return (
     <div className="min-h-screen py-10 border-l border-r border-gray-100">
@@ -94,7 +104,7 @@ const ProfilePage = () => {
             Change Password
           </h3>
 
-          <form onSubmit={handlePasswordChange} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Current Password
@@ -102,10 +112,18 @@ const ProfilePage = () => {
               <div className="relative">
                 <input
                   type={showCurrentPassword ? "text" : "password"}
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
+                  {...register("currentPassword", {
+                    required: "Current password is required",
+                    minLength: {
+                      value: 1,
+                      message: "Please enter your current password",
+                    },
+                  })}
+                  className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.currentPassword
+                      ? "border-red-300 focus:ring-red-500"
+                      : "border-gray-300"
+                  }`}
                 />
                 <button
                   type="button"
@@ -119,6 +137,11 @@ const ProfilePage = () => {
                   )}
                 </button>
               </div>
+              {errors.currentPassword && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors.currentPassword.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -128,11 +151,24 @@ const ProfilePage = () => {
               <div className="relative">
                 <input
                   type={showNewPassword ? "text" : "password"}
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                  minLength={6}
+                  {...register("newPassword", {
+                    required: "New password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                    validate: (value) => {
+                      if (value.length < 6) {
+                        return "Password must be at least 6 characters";
+                      }
+                      return true;
+                    },
+                  })}
+                  className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                    errors.newPassword
+                      ? "border-red-300 focus:ring-red-500"
+                      : "border-gray-300"
+                  }`}
                 />
                 <button
                   type="button"
@@ -146,9 +182,15 @@ const ProfilePage = () => {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Must be at least 6 characters
-              </p>
+              {errors.newPassword ? (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors.newPassword.message}
+                </p>
+              ) : (
+                <p className="text-xs text-gray-500 mt-1">
+                  Must be at least 6 characters
+                </p>
+              )}
             </div>
 
             {/* Confirm New Password */}
@@ -158,14 +200,24 @@ const ProfilePage = () => {
               </label>
               <input
                 type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
+                {...register("confirmPassword", {
+                  required: "Please confirm your new password",
+                  validate: (value) => {
+                    if (value !== newPassword) {
+                      return "Passwords do not match";
+                    }
+                    return true;
+                  },
+                })}
+                className={`w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  errors.confirmPassword
+                    ? "border-red-300 focus:ring-red-500"
+                    : "border-gray-300"
+                }`}
               />
-              {confirmPassword && newPassword !== confirmPassword && (
+              {errors.confirmPassword && (
                 <p className="text-xs text-red-500 mt-1">
-                  Passwords do not match
+                  {errors.confirmPassword.message}
                 </p>
               )}
             </div>
@@ -186,7 +238,7 @@ const ProfilePage = () => {
 
             <button
               type="submit"
-              disabled={!isPasswordFormValid || passwordMutation.isPending}
+              disabled={!isValid || passwordMutation.isPending}
               className="w-full bg-blue-600 text-white py-3 px-4 rounded-md font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
             >
               {passwordMutation.isPending
