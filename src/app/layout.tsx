@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import "@/app/globals.css";
 import { Inter } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import ClientLayout from "./ClientLayout";
 
 const inter = Inter({
@@ -40,6 +41,7 @@ export default function RootLayout({
       <body>
         <div id="root" className="max-w-screen-sm mx-auto">
           <ClientLayout>{children}</ClientLayout>
+          <SpeedInsights />
         </div>
       </body>
     </html>
