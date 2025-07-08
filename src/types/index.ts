@@ -120,3 +120,10 @@ export interface IBooking {
   totalPrice: number;
   createdAt: number;
 }
+
+export interface IArticle {
+  id: string;
+  title: string;
+  imageUrl: string;
+  content: string;
+}

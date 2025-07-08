@@ -35,6 +35,7 @@ import {
   EHotelCategory,
   IWishlist,
   IBooking,
+  IArticle,
 } from "@/types";
 import { DbPath, HotelListLimit } from "@/constants";
 
@@ -234,4 +235,40 @@ export const changeUserPassword = async (
   } catch (error) {
     throw error;
   }
+};
+
+export const fetchArticles = () => {
+  return new Promise<IArticle[]>((resolve) => {
+    const articlesRef = ref(db, DbPath.articles);
+
+    onValue(articlesRef, (snapshot) => {
+      if (!snapshot.exists()) {
+        resolve([]);
+        return;
+      }
+
+      const articles = snapshot.val() as Record<string, IArticle>;
+      const articlesData = Object.values(articles);
+
+      resolve(articlesData);
+    });
+  });
+};
+
+export const fetchArticleById = (id: string) => {
+  return new Promise<IArticle>((res) => {
+    if (!id) return;
+
+    const articleRef = query(
+      ref(db, DbPath.articles),
+      orderByChild("id"),
+      equalTo(id),
+    );
+
+    onValue(articleRef, (snapshot) => {
+      if (snapshot.exists()) {
+        res(Object.values(snapshot.val())[0] as IArticle);
+      }
+    });
+  });
 };

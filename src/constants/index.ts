@@ -18,6 +18,7 @@ export const DbPath = {
   location: "hotels_location",
   categoryLocation: "hotels_type_location",
   detail: "hotels_detail",
+  articles: "articles",
 };
 
 export const TenantOptions = [
