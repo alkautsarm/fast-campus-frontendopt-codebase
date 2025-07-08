@@ -46,7 +46,7 @@ const BookingCard = ({ booking }: { booking: IBooking }) => {
 };
 
 const TripsPage = () => {
-  const { isAuthenticated, loading, user, openAuthModal } = useAuth();
+  const { isAuthenticated, loading, user } = useAuth();
 
   const { data: bookings = [], error } = useQuery({
     queryKey: ["bookings", user?.uid],
@@ -55,7 +55,6 @@ const TripsPage = () => {
   });
 
   if (!isAuthenticated && !loading) {
-    openAuthModal();
     return null;
   }
 
@@ -105,7 +104,7 @@ const TripsPage = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {bookings.map((booking) => (
             <BookingCard key={booking.id} booking={booking} />
           ))}
