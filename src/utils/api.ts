@@ -20,6 +20,12 @@ import {
   where,
   query as firestoreQuery,
 } from "firebase/firestore";
+import {
+  updatePassword,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  User,
+} from "firebase/auth";
 import { DateRange } from "react-day-picker";
 import { db, firestore } from "./db";
 import {
@@ -204,4 +210,28 @@ export const fetchUserBookings = async (
 
     return data;
   });
+};
+
+export const changeUserPassword = async (
+  user: User,
+  currentPassword: string,
+  newPassword: string,
+): Promise<void> => {
+  try {
+    if (!user.email) {
+      throw new Error("User email is required");
+    }
+
+    // Re-authenticate the user with current password
+    const credential = EmailAuthProvider.credential(
+      user.email,
+      currentPassword,
+    );
+    await reauthenticateWithCredential(user, credential);
+
+    // Update password
+    await updatePassword(user, newPassword);
+  } catch (error) {
+    throw error;
+  }
 };

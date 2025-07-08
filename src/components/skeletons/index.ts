@@ -10,3 +10,4 @@ export { default as HotelDetailSkeleton } from "./HotelDetailSkeleton";
 export { default as HotelReviewsSkeleton } from "./HotelReviewsSkeleton";
 export { default as WishlistSkeleton } from "./WishlistSkeleton";
 export { default as TripsSkeleton } from "./TripsSkeleton";
+export { default as ProfileSkeleton } from "./ProfileSkeleton";
